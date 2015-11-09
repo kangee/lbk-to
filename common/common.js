@@ -1,0 +1,1 @@
+Tornaments = new Meteor.Collection("tornaments");

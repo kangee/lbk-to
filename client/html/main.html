@@ -1,18 +1,13 @@
-<head>
-  <title>List Overview</title>
-</head>
+<template name="main">
+	<head>
+	  <title>List Overview</title>
+	</head>
 
-<body>
-  {{>header}}
-  {{>turnaments}}
-  {{>footer}}
-</body>
-
-<template name="header">
-  <h1>Welcome to List OverView</h1>
-  {{>loginButtons}}
-</template>
-
-<template name="footer">
-	<p>Created by: Markus Fridolfsson</p>
+	<body>
+	  {{>header}}
+	  <div>
+	  	{{> yield}}
+	  </div>
+	  {{>footer}}
+	</body>
 </template>

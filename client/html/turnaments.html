@@ -1,5 +1,14 @@
-<template name="turnaments">
+<template name="tornamentsList">
 	<div id="turnament-div">
-		<p>This is a turnament div</p>
+		<ul>
+			{{#each tornaments}}
+				{{>tornamenetListItem}}
+			{{/each}}
+		</ul>
 	</div>
 </template>
+
+<template name="tornamenetListItem">
+	<li>{{Name}} {{date}}</li>
+</template>
+

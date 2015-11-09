@@ -1,0 +1,47 @@
+<template name="user">
+	{{#if viewProfile}}
+		{{>viewprofile}}
+	{{else}}
+		{{>editProfile}}
+	{{/if}}
+</template>
+
+<template name="viewprofile">
+	<div>
+		<p>{{profile.Name}}</p>
+		<p>{{profile.Email}}</p>
+		<p>{{profile.Location}}</p>
+		<button class="toggle-view-profile btn btn-default">Edit</button>
+	</div>
+</template>
+
+<template name="editProfile">
+	<div>
+		<form id="profile-data-form" class="form-horizontal">
+			<div class="form-group">
+				<label for="profile-name-input" class="col-sm-2 control-label">Name:</label>
+				<div class="col-sm-10">
+					<input id="profile-name-input" class="form-control" type="text" value={{profile.Name}} />
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="profile-email-input" class="col-sm-2 control-label">Email:</label>
+				<div class="col-sm-10">
+					<input id="profile-email-input" class="form-control" type="email" value={{profile.Email}} />
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="profile-location-input" class="col-sm-2 control-label">Location:</label>
+				<div class="col-sm-10">
+					<input id="profile-location-input" class="form-control" type="text" value={{profile.Location}} />
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<input class="btn btn-default" type="submit" />
+					<button class="btn btn-default cancel-profile-update">Cancel</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</template>
