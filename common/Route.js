@@ -1,8 +1,9 @@
 Router.map(function() {
 
-	this.route('home', {
+
+  	this.route('tournamentsList', {
 	    path: '/',
-	    template: 'tornamentsList',
+	    template: 'tournamentsList',
     	layoutTemplate: 'main',
   	});
 
@@ -18,4 +19,43 @@ Router.map(function() {
 	    	}
 	    }
 	});
-})
+
+	this.route('tournament',{
+		name: 'tournament',
+		path: 'tournament/:_name',
+		template: 'tournament',
+		layoutTemplate: 'main',
+		data: function(){
+			var _name = this.params._name;
+			return Tornaments.findOne({Name: _name});
+			
+		},
+		onBeforeAction: function (pause) {
+	       	if (!Meteor.user()) {
+	          Router.go("/");
+	        }else{
+	     	   this.next();
+	    	}
+	    }
+	});
+	this.route('tournamentSatandings',{
+		path: 'tournament/:_name/currentStanding',
+		template: 'Tournament_CurrentStanding',
+		layoutTemplate: 'main',
+		data: function(){
+			var _name = this.params._name;
+			return Tournament.findOne({Name: _name});
+			
+		},
+		onBeforeAction: function (pause) {
+	       	if (!Meteor.user()) {
+	          Router.go("/");
+	        }else{
+	     	   this.next();
+	    	}
+	    }
+	});
+
+
+});
+

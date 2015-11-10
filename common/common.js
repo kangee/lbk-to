@@ -1,1 +1,1 @@
-Tornaments = new Meteor.Collection("tornaments");
+Tournament = new Meteor.Collection("tournament");

@@ -1,7 +1,5 @@
 
 Session.set("viewUserProfile",true);
-//Users = Meteor.Collection("users"),
-
 
 Template.user.helpers({
 	viewProfile: function(){

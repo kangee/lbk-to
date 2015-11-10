@@ -1,3 +1,3 @@
-Meteor.publish("tornaments",function(){
-    return Tornaments.find();
+Meteor.publish("tournament",function(){
+    return Tournament.find();
 });

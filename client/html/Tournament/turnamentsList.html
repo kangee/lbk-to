@@ -1,0 +1,14 @@
+<template name="tournamentsList">
+	<div id="tournament-div">
+		<ul>
+			{{#each tournament}}
+				{{>tournamentListItem}}
+			{{/each}}
+		</ul>
+	</div>
+</template>
+
+<template name="tournamentListItem">
+	<li><a href="/tournament/{{Name}}">{{Name}} {{Date StartDate}}</a></li>
+</template>
+
