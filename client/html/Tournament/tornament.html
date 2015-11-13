@@ -1,5 +1,22 @@
 <template name="tournament">
-	<h1>{{Tournament.Name}}</h1>
-	<h2>{{Date Tournament.StartDate}}</h2>
-	
+	{{> Tournament_nav}}
+	<h4>Players</h4>
+	<ol>
+		{{#each Tournament.Players}}
+			<li>{{Name}}</li>
+		{{/each}}
+	</ol>
+
+	{{#if isTo}}
+
+	<h4>Add Player</h4>
+	<form class="form-inline">
+	  	<div class="form-group">
+	    	<label for="name">Name</label>
+	   		<input type="text" class="form-control" id="name">
+	  	</div>
+	 	<button type="submit" class="btn btn-default">Add</button>
+	</form>
+	{{/if}}
+
 </template>

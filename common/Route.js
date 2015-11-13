@@ -27,7 +27,7 @@ Router.map(function() {
 		layoutTemplate: 'main',
 		data: function(){
 			var _name = this.params._name;
-			return Tornaments.findOne({Name: _name});
+			return Tournaments.findOne({Name: _name});
 			
 		},
 		onBeforeAction: function (pause) {
@@ -38,14 +38,14 @@ Router.map(function() {
 	    	}
 	    }
 	});
+
 	this.route('tournamentSatandings',{
 		path: 'tournament/:_name/currentStanding',
 		template: 'Tournament_CurrentStanding',
 		layoutTemplate: 'main',
 		data: function(){
 			var _name = this.params._name;
-			return Tournament.findOne({Name: _name});
-			
+			return Tournaments.findOne({Name: _name});	
 		},
 		onBeforeAction: function (pause) {
 	       	if (!Meteor.user()) {
