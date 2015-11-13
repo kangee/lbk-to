@@ -6,7 +6,6 @@ Meteor.methods({
 	createTournament:function(tournament){
 		//console.log(tournament);
 		tournament.TO = Meteor.user().username;
-		tournament.Players = [];
 		Tournaments.insert(tournament);
 	},
 	addPlayer:function(tournamentName, Player){

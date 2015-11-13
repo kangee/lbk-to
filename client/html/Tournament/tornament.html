@@ -1,7 +1,7 @@
 <template name="tournament">
 	{{> Tournament_nav}}
-	<h4>Players</h4>
-	<ol>
+	<h4 class="col-sm-offset-1">Players</h4>
+	<ol class="col-sm-offset-1">
 		{{#each Tournament.Players}}
 			<li>{{Name}}</li>
 		{{/each}}
@@ -9,8 +9,8 @@
 
 	{{#if isTo}}
 
-	<h4>Add Player</h4>
-	<form class="form-inline">
+	<h4 class="col-sm-offset-1">Add Player</h4>
+	<form class="form-inline col-sm-offset-1">
 	  	<div class="form-group">
 	    	<label for="name">Name</label>
 	   		<input type="text" class="form-control" id="name">

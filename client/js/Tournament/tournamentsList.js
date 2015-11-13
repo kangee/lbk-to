@@ -3,7 +3,6 @@ Meteor.subscribe("tournaments");
 
 Template.tournamentsList.helpers({
 	tournaments: function(){
-		console.log("Geting data");
 		return Tournaments.find({},{sort:{StartDate:1}});
 	}
 	
