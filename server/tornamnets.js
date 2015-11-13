@@ -9,6 +9,9 @@ Meteor.methods({
 		Tournaments.insert(tournament);
 	},
 	addPlayer:function(tournamentName, Player){
-		Tournaments.update({ Name: tournamentName },{ $push: { Players: Player }})
+		var _player = Player;
+		var id = new Mongo.ObjectID();
+		_player.Id = id._str;
+		Tournaments.update({ Name: tournamentName },{ $push: { Players: _player }})
 	}
 })
