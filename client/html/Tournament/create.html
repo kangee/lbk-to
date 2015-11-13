@@ -1,5 +1,33 @@
 <template name="Tournament_create">
 
-	<h1>Create new tournament</h2>
+	<h1>Create new tournament</h1>
+	<div>
+		<form id="profile-data-form" class="form-horizontal">
+			<div class="form-group">
+				<label for="profile-name-input" class="col-sm-2 control-label">Name:</label>
+				<div class="col-sm-10">
+					<input id="tournament-name-input" required class="form-control" type="text"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="profile-date-input" class="col-sm-2 control-label">Date:</label>
+				<div class="col-sm-10">
+					<input id="tournament-date-input" required class="form-control" type="Date"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="profile-location-input" class="col-sm-2 control-label">Location:</label>
+				<div class="col-sm-10">
+					<input id="tournament-location-input" required class="form-control" type="text"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<input class="btn btn-default" type="submit" />
+					<button class="btn btn-default cancel-create">Cancel</button>
+				</div>
+			</div>
+		</form>
+	</div>
 
 </template>

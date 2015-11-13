@@ -1,7 +1,10 @@
 <template name="tournamentsList">
 	<div id="tournament-div">
+		{{#if currentUser}}
+		<button class="btn">Create New</button>
+		{{/if}}
 		<ul>
-			{{#each tournament}}
+			{{#each tournaments}}
 				{{>tournamentListItem}}
 			{{/each}}
 		</ul>

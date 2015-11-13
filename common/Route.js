@@ -56,6 +56,19 @@ Router.map(function() {
 	    }
 	});
 
+	this.route('createTournament',{
+		path: 'createTournament',
+		template: 'Tournament_create',
+		layoutTemplate: 'main',
+		onBeforeAction: function (pause) {
+	       	if (!Meteor.user()) {
+	          Router.go("/");
+	        }else{
+	     	   this.next();
+	    	}
+	    }
+	})
+
 
 });
 

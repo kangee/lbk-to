@@ -1,11 +1,20 @@
 
-Meteor.subscribe("tournament");
+Meteor.subscribe("tournaments");
 
 Template.tournamentsList.helpers({
-	tornaments: function(){
-		return Tournament.find({},{sort:{StartDate:1}});
+	tournaments: function(){
+		console.log("Geting data");
+		return Tournaments.find({},{sort:{StartDate:1}});
 	}
 	
+});
+
+Template.tournamentsList.events({
+
+	'click button':function(){
+		Router.go("createTournament");
+	}
+
 });
 
 
