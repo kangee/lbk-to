@@ -24,36 +24,35 @@ Router.map(function() {
 		name: 'tournament',
 		path: 'tournament/:_name',
 		template: 'tournament',
-		layoutTemplate: 'main',
+		layoutTemplate: 'Tournament_main',
 		data: function(){
 			var _name = this.params._name;
-			return Tournaments.findOne({Name: _name});
+			return {Tournament:Tournaments.findOne({Name: _name})};
 			
-		},
-		onBeforeAction: function (pause) {
-	       	if (!Meteor.user()) {
-	          Router.go("/");
-	        }else{
-	     	   this.next();
-	    	}
-	    }
+		}
+	});
+
+		this.route('tournamentRound',{
+		name: 'tournamentRound',
+		path: 'tournament/:_name/round/:_id',
+		template: 'Tournament_round',
+		layoutTemplate: 'Tournament_main',
+		data: function(){
+			var _name = this.params._name;
+			var _round = this.params._id;
+			return { Tournament: Tournaments.findOne({Name: _name}) , Round:_round};
+			
+		}
 	});
 
 	this.route('tournamentSatandings',{
 		path: 'tournament/:_name/currentStanding',
 		template: 'Tournament_CurrentStanding',
-		layoutTemplate: 'main',
+		layoutTemplate: 'Tournament_main',
 		data: function(){
 			var _name = this.params._name;
-			return Tournaments.findOne({Name: _name});	
-		},
-		onBeforeAction: function (pause) {
-	       	if (!Meteor.user()) {
-	          Router.go("/");
-	        }else{
-	     	   this.next();
-	    	}
-	    }
+			return {Tournament: Tournaments.findOne({Name: _name})};	
+		}
 	});
 
 	this.route('createTournament',{

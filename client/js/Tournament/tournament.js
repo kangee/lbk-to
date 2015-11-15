@@ -1,6 +1,6 @@
 Template.tournament.helpers({
 	Tournament:function(){
-		return Router.current().data()
+		return Router.current().data().Tournament
 	},
 	Date: function(date){
 		var _date = new Date(date);
