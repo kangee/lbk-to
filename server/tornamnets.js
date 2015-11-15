@@ -13,5 +13,8 @@ Meteor.methods({
 		var id = new Mongo.ObjectID();
 		_player.Id = id._str;
 		Tournaments.update({ Name: tournamentName },{ $push: { Players: _player }})
+	},
+	removePlayer:function(tournamentName,PlayerID){
+		Tournaments.update({ Name : tournamentName } ,{ $pull : {Players: { Id:PlayerID } } } );
 	}
 })

@@ -1,9 +1,12 @@
 <template name="tournament">
-	{{> Tournament_nav}}
 	<h4 class="col-sm-offset-1">Players</h4>
 	<ol class="col-sm-offset-1">
 		{{#each Tournament.Players}}
-			<li>{{Name}}</li>
+			<li>{{Name}}
+				{{#if isTo}} 
+					<button class="delete-player">&times;</button>  
+				{{/if}} 
+			</li>
 		{{/each}}
 	</ol>
 

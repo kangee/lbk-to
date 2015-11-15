@@ -21,5 +21,12 @@ Template.tournament.events({
 			Name: name
 		};
 		Meteor.call('addPlayer',Router.current().data().Name, Player)
+	},
+	'click .delete-player':function(){
+		var tournamentName = Router.current().data().Name;
+		var playerId = this.Id;
+		Meteor.call('removePlayer',tournamentName,playerId);
 	}
+
+
 });
