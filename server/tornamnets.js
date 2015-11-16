@@ -4,7 +4,6 @@ Meteor.publish("tournaments",function(){
 
 Meteor.methods({
 	createTournament:function(tournament){
-		//console.log(tournament);
 		tournament.TO = Meteor.user().username;
 		Tournaments.insert(tournament);
 	},
@@ -16,5 +15,9 @@ Meteor.methods({
 	},
 	removePlayer:function(tournamentName,PlayerID){
 		Tournaments.update({ Name : tournamentName } ,{ $pull : {Players: { Id:PlayerID } } } );
+	},
+	startTournament:function(tournamentName){
+		Tournaments.update({ Name : tournamentName } ,{ $set : {started: true } } );		
 	}
+
 })

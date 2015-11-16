@@ -10,18 +10,20 @@ Template.Tournament_create.events({
 	var date = document.getElementById("tournament-date-input").value;
 	var location = document.getElementById("tournament-location-input").value;
 	var rounds = document.getElementById("tournament-rounds-input").value;
+	var _rounds = [];
 
-	var tournament = {
+	for (var i = 0; i < rounds; i++) {
+		_rounds[i] = {Games: [], done:false, paried: false}
+	}
+		var tournament = {
 		Name: name,
 		StartDate: date,
+		started: false,
 		Location: location,
-		Rounds: rounds,
+		Rounds: _rounds,
 		Players:[]
 	}
-
-	//console.log(tournament);
 	Meteor.call('createTournament',tournament);
-	//Tournament.insert({tournament});
 	Router.go("/")
  }
 

@@ -8,6 +8,9 @@ Template.tournament.helpers({
 	},
 	isTo: function(){
 		return Meteor.user().username === Router.current().data().Tournament.TO
+	},
+	notStarted:function(){
+		return !Router.current().data().Tournament.started
 	}
 
 });
@@ -26,6 +29,10 @@ Template.tournament.events({
 		var tournamentName = Router.current().data().Tournament.Name;
 		var playerId = this.Id;
 		Meteor.call('removePlayer',tournamentName,playerId);
+	},
+	'click .start-tournament':function(){
+		var tournamentName = Router.current().data().Tournament.Name;
+		Meteor.call('startTournament',tournamentName);
 	}
 
 

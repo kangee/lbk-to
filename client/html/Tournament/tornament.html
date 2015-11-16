@@ -1,4 +1,10 @@
 <template name="tournament">
+	{{#if notStarted}}
+		{{#if isTo}}
+			<button class="col-sm-offset-3 btn btn-lg start-tournament">Start Tournament!</button>
+		{{/if}}
+	{{/if}}
+
 	<h4 class="col-sm-offset-1">Players</h4>
 	<ol class="col-sm-offset-1">
 		{{#each Tournament.Players}}

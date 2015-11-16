@@ -1,5 +1,15 @@
 <template name="Tournament_round" >
 
-<p> Hello, World! </p>
+
+<div class="col-sm-offset-1">
+	{{#if Paired}}
+	<ol>
+	{{#each Games Tournamnet}}
+		<li> </li>
+	{{/each}}
+	</ol>
+	{{/if}}
+
+</div>
 
 </template>

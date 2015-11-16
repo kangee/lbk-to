@@ -4,7 +4,7 @@ Template.Tournament_nav.helpers({
 	},
 	Rounds: function(){
 		var tournament = Router.current().data().Tournament;
-		var rounds = tournament.Rounds;
+		var rounds = tournament.Rounds.length;
 		var name = tournament.Name;
 		var out=[];
 		for (var i = 1; i <= rounds; i++) {
