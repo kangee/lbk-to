@@ -2,10 +2,12 @@
 	<h4 class="col-sm-offset-1">Players</h4>
 	<ol class="col-sm-offset-1">
 		{{#each Tournament.Players}}
-			<li>{{Name}}
+			<li> <span class="player-name">{{Name}}</span>
 				{{#if isTo}} 
-					<button class="delete-player">&times;</button>  
-				{{/if}} 
+					<button class="delete-player btn btn-xs">&times;</button>  
+					<hr>
+				{{/if}}
+
 			</li>
 		{{/each}}
 	</ol>

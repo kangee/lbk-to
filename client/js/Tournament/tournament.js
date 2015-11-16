@@ -7,7 +7,7 @@ Template.tournament.helpers({
 		return  _date.toLocaleDateString();
 	},
 	isTo: function(){
-		return Meteor.user().username === Router.current().data().TO
+		return Meteor.user().username === Router.current().data().Tournament.TO
 	}
 
 });
@@ -20,10 +20,10 @@ Template.tournament.events({
 		var Player = {
 			Name: name
 		};
-		Meteor.call('addPlayer',Router.current().data().Name, Player)
+		Meteor.call('addPlayer',Router.current().data().Tournament.Name, Player)
 	},
 	'click .delete-player':function(){
-		var tournamentName = Router.current().data().Name;
+		var tournamentName = Router.current().data().Tournament.Name;
 		var playerId = this.Id;
 		Meteor.call('removePlayer',tournamentName,playerId);
 	}

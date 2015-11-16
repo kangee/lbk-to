@@ -1,3 +1,8 @@
 input {
 	max-width: 280px;
 }
+
+.player-name{
+	display: inline-block;
+	min-width: 180px;
+}
