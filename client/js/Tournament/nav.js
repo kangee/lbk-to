@@ -8,7 +8,11 @@ Template.Tournament_nav.helpers({
 		var name = tournament.Name;
 		var out=[];
 		for (var i = 1; i <= rounds; i++) {
-			out[i-1]={url:/tournament/+name+"/round/"+i,text:"Round "+i}
+			var active  = "";
+			if (Router.current().data().Round == i){
+				active = "active"
+			}
+			out[i-1]={active: active, url:/tournament/+name+"/round/"+i,text:"Round "+i}
 		};
 		return out;
 	}
