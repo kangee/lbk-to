@@ -4,9 +4,14 @@ Template.Tournament_round.helpers({
 		return Router.current().data().Tournament
 	},
 
+	Round:function(){
+		return Router.current().data().Round
+	},
+
 	Games:function(tournamnet, round){
-		
-		return [{PlayerOne:"Markus Fridolfsson",PlayerTwo:"Jonas Pärssinen"}];
+		console.log(tournamnet);
+		console.log(round);
+		return tournamnet.Rounds[round-1].Games;
 	},
 	Paired:function(){
 		var tournamnet = Router.current().data().Tournament;

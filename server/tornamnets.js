@@ -29,7 +29,7 @@ Meteor.methods({
 		_players.sort(playerSort);
 		console.log("after sort");
 
-		var games = machPlayers(_players);
+		var games = matchPlayers(_players);
 		console.log("after matching");
 		console.log(games);
 
@@ -47,7 +47,7 @@ var playerSort = function(player1, player2){
 	return player2.Points - player1.Points
 }
 
-var machPlayers= function(Players){
+var matchPlayers= function(Players){
 	console.log(Players.length);
 	console.log(Players);
 	var games = [];
