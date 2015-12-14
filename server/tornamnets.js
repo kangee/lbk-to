@@ -55,6 +55,7 @@ Meteor.methods({
 			}
 		};
 		_rounds[round-1].done = true;
+		_players.sort(playerSort);
 		Tournaments.update({Name:tournament.Name},{$set: {Rounds: _rounds, Players: _players}});
 
 		for (var i = _games.length - 1; i >= 0; i--) {
@@ -76,6 +77,12 @@ var playerSort = function(player1, player2){
 
 var matchPlayers= function(Players){
 	var games = [];
+	var playerDict = {};
+
+	for (var i = Players.length - 1; i >= 0; i--) {
+		playerDict[Players[i].Id] = Players[i];
+	};
+
 	var j = 0;
 	for (var i = 0; i < Players.length; i=i+2) {
 		games[j] = {
@@ -83,10 +90,10 @@ var matchPlayers= function(Players){
 			PlayerTwo: Players[i+1].Id,
 			Result: null,
 			Table: j
-
 		};
 		j++;
 	};
-
 	return games;
 }
+
+

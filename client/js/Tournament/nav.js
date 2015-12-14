@@ -15,6 +15,16 @@ Template.Tournament_nav.helpers({
 			out[i-1]={active: active, url:/tournament/+name+"/round/"+i,text:"Round "+i}
 		};
 		return out;
+	},
+	scoreURL: function(){
+		var name = Router.current().data().Tournament.Name
+		return "/tournament/"+name+"/currentStanding"
+	},
+	activeScoreLink: function(){
+		if(Router.current().url.endsWith("currentStanding")){
+			return "active"
+		}
+		return "";
 	}
 	
 })
