@@ -24,7 +24,15 @@ Template.Tournament_round.helpers({
 				return players[i].Name
 			}
 		};
+	},
+	isTo: function(){
+		return Meteor.user().username === Router.current().data().Tournament.TO
+	},
+
+	notDone:function(){
+		return this.Result === null;
 	}
+
 });
 
 Template.Tournament_round.events({

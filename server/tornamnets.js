@@ -27,11 +27,16 @@ Meteor.methods({
 		var _players = tournament.Players;
 
 		_players.sort(playerSort);
-		var games = matchPlayers(_players);
 
-		_rounds[round-1].Games = games;
-		_rounds[round-1].paried = true;
-		Tournaments.update({Name:tournamentName},{$set:{Rounds:_rounds, Players:_players}});
+		if(round <= _rounds.length){
+			var games = matchPlayers(_players);
+
+			_rounds[round-1].Games = games;
+			_rounds[round-1].paried = true;
+			Tournaments.update({Name:tournamentName},{$set:{Rounds:_rounds, Players:_players}});
+		}else{
+			Tournaments.update({Name:tournamentName},{$set:{Players:_players}});
+		}
 	},
 	reportResult:function(tournamentName, round , table , playerOne , playerOneScore , playerTwo , playerTwoScore){
 		var tournament = Tournaments.findOne({Name:tournamentName});
@@ -49,8 +54,17 @@ Meteor.methods({
 				_players[i].Points = Number(_players[i].Points) + Number(playerTwoScore);
 			}
 		};
+		_rounds[round-1].done = true;
+		Tournaments.update({Name:tournament.Name},{$set: {Rounds: _rounds, Players: _players}});
 
-		Tournaments.update({Name:tournament.Name},{$set: {Rounds: _rounds, Players: _players}})
+		for (var i = _games.length - 1; i >= 0; i--) {
+			if (_games[i].Result === null){
+				return
+			}
+		};
+		var next = Number(round) + 1;
+		Meteor.call("pairRound",tournamentName, next);
+
 	}
 })
 

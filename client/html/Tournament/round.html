@@ -8,10 +8,17 @@
 				<li>
 					<form class="form-inline">
 						{{Name PlayerOne}} -VS- {{Name PlayerTwo}}
-						<input type="number"/> 
-						<input type="number"/>
-						<button type="submit" class="btn btn-default">Report</button>
+						{{#if notDone}}
+							{{#if isTo}}
+								<input type="number"/> 
+								<input type="number"/>
+								<button type="submit" class="btn btn-default">Report</button>
+							{{/if}}
+						{{else}}
+						{{Result}}
+						{{/if}}
 					</form>
+
 				</li>
 			{{/each}}
 		</ol>
