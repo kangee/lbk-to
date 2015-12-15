@@ -12,6 +12,7 @@ Meteor.methods({
 		var id = new Mongo.ObjectID();
 		_player.Id = id._str;
 		_player.Points = 0;
+		_player.Oponents = [];
 		Tournaments.update({ Name: tournamentName },{ $push: { Players: _player }})
 	},
 	removePlayer:function(tournamentName,PlayerID){
@@ -69,6 +70,22 @@ Meteor.methods({
 	}
 })
 
+var calcCost= function(player1 , player2){
+	var cost = 0;
+
+	var haveMet = false;
+	for (var i = player1.Oponents.length - 1; i >= 0; i--) {
+		if(player1.Oponents[i] === player2.Id){
+			haveMet += true;
+		}
+	};
+
+	if(player1.Id === player2.Id) return 10000;
+	if(haveMet) cost += 1000;
+	cost += Math.abs(player1.Points - player2.Points);
+	return cost;
+
+}
 
 
 var playerSort = function(player1, player2){
@@ -76,15 +93,25 @@ var playerSort = function(player1, player2){
 }
 
 var matchPlayers= function(Players){
+	
 	var games = [];
-	var playerDict = {};
+	var matrix = [];
 
-	for (var i = Players.length - 1; i >= 0; i--) {
-		playerDict[Players[i].Id] = Players[i];
+	var Munkres = Meteor.npmRequire("munkres-js");
+	var optimizer = new Munkres.Munkres();
+
+	for (var i = 0; i < Players.length; i++) {
+		var playerCost = [];
+		for (var j = 0; j < Players.length; j++) {
+			playerCost[j] = calcCost(Players[i],Players[j]);
+		};
+		matrix[i]=playerCost;
 	};
 
 	var j = 0;
 	for (var i = 0; i < Players.length; i=i+2) {
+		Players[i].Oponents.push(Players[i+1].Id)
+		Players[i+1].Oponents.push(Players[i].Id)
 		games[j] = {
 			PlayerOne: Players[i].Id,
 			PlayerTwo: Players[i+1].Id,

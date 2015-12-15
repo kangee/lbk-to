@@ -22,3 +22,7 @@ less
 nemo64:bootstrap
 twbs:bootstrap
 iron:router
+meteorhacks:npm
+
+
+npm-container
