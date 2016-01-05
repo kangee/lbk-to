@@ -92,33 +92,115 @@ var playerSort = function(player1, player2){
 	return player2.Points - player1.Points
 }
 
+var hasMeet = function(playerOne,playerTwo){
+	for (var i = 0; i < playerOne.Oponents.length; i++) {
+		if (playerOne.Oponents[i] === playerTwo.Id){
+			return true;
+		}
+	};
+
+	return false;
+}
+
+var redoOne = function(Games, Players, remaningPlayers, badMachup){
+
+	game = Games[Games.length-1];
+	Games.splice(Games.length-1);
+	addToBadMacthup(badMachup, game.PlayerOne, game.PlayerTwo);
+	return clearGame(Players, remaningPlayers, game.PlayerOne, game.PlayerTwo);
+	
+}
+
+var addToBadMacthup= function(badGames, PlayerOneId, PlayerTwoId){
+	badGames[PlayerOneId].push(PlayerTwoId);
+	badGames[PlayerTwoId].push(PlayerOneId);
+}
+
+var clearGame= function(Players, remaningPlayers, PlayerOneId, PlayerTwoId){
+	var playerOne;
+	var playerTwo;
+	for (var i = 0; i < Players.length; i++) {
+		if(Players[i].Id === PlayerOneId){
+			var index = IndexOf(Players[i].Oponents,PlayerTwoId);
+			Players[i].Oponents.splice(index, 1);
+			playerOne = {
+				Player: Players[i],
+				Index: i
+			}
+		}
+		if(Players[i].Id === PlayerTwoId){
+			var index = IndexOf(Players[i].Oponents,PlayerOneId);
+			Players[i].Oponents.splice(index, 1);
+			playerTwo = {
+				Player: Players[i],
+				Index: i
+			}
+		}
+	};
+	return [playerOne,playerTwo];
+
+}
+
+var IndexOf = function(array, element){
+	for (var i = array.length - 1; i >= 0; i--) {
+		if(array[i]===element){
+			return i
+		}
+	};
+	return -1
+}
+
+var createGame = function(Players, playerOneIndex ,playerTwoIndex ){
+	Players[playerOneIndex].Oponents.push(Players[playerTwoIndex].Id)
+	Players[playerTwoIndex].Oponents.push(Players[playerOneIndex].Id)
+	game = {
+		PlayerOne: Players[playerOneIndex].Id,
+		PlayerTwo: Players[playerTwoIndex].Id,
+		Result: null
+	};
+	return game;
+}
+
 var matchPlayers= function(Players){
 	
 	var games = [];
-	var matrix = [];
+	var remaningPlayers = [];
+	var badMachup = {};
 
-	var Munkres = Meteor.npmRequire("munkres-js");
-	var optimizer = new Munkres.Munkres();
-
-	for (var i = 0; i < Players.length; i++) {
-		var playerCost = [];
-		for (var j = 0; j < Players.length; j++) {
-			playerCost[j] = calcCost(Players[i],Players[j]);
-		};
-		matrix[i]=playerCost;
+	for (var i = Players.length - 1; i >= 0; i--) {
+		remaningPlayers[i] = {
+			Player: Players[i],
+			Index: i
+		}
+		badMachup[Players[i].Id] = [];
 	};
 
-	var j = 0;
-	for (var i = 0; i < Players.length; i=i+2) {
-		Players[i].Oponents.push(Players[i+1].Id)
-		Players[i+1].Oponents.push(Players[i].Id)
-		games[j] = {
-			PlayerOne: Players[i].Id,
-			PlayerTwo: Players[i+1].Id,
-			Result: null,
-			Table: j
+	while(remaningPlayers.length>=2){
+
+		var playerOne = remaningPlayers[0];
+		var playerTwo = null;
+		var foundOpponent = false
+		var k = 1;
+		while (!foundOpponent) {
+			if(!hasMeet(playerOne.Player,remaningPlayers[k].Player) && IndexOf(badMachup[playerOne.Player.Id],remaningPlayers[k].Player.Id)==-1){
+				playerTwo = remaningPlayers[k]
+
+				var game = createGame(Players, playerOne.Index, playerTwo.Index);
+				game["Table"] = games.length;
+				games.push(game);
+				
+				remaningPlayers.splice(k,1);
+				remaningPlayers.splice(0,1);
+				foundOpponent = true;
+			}else {
+				k++;
+				if (k >= remaningPlayers.length){
+					var a = redoOne(games, Players, remaningPlayers, badMachup).concat(remaningPlayers);
+					remaningPlayers = a;
+					foundOpponent = true;
+				}
+			}
 		};
-		j++;
 	};
 	return games;
 }
