@@ -27,7 +27,7 @@ Meteor.methods({
 		var _rounds = tournament.Rounds;
 		var _players = tournament.Players;
 
-		_players.sort(playerSort);
+		_players.sort(playerSort(tournamentName));
 
 		if(round <= _rounds.length){
 			var games = matchPlayers(_players);
@@ -55,8 +55,8 @@ Meteor.methods({
 				_players[i].Points = Number(_players[i].Points) + Number(playerTwoScore);
 			}
 		};
-		_rounds[round-1].done = true;
-		_players.sort(playerSort);
+		
+		_players.sort(playerSort(tournament.Name));
 		Tournaments.update({Name:tournament.Name},{$set: {Rounds: _rounds, Players: _players}});
 
 		for (var i = _games.length - 1; i >= 0; i--) {
@@ -64,6 +64,7 @@ Meteor.methods({
 				return
 			}
 		};
+		_rounds[round-1].done = true;
 		var next = Number(round) + 1;
 		Meteor.call("pairRound",tournamentName, next);
 
@@ -167,12 +168,21 @@ var matchPlayers= function(Players){
 	var remaningPlayers = [];
 	var badMachup = {};
 
-	for (var i = Players.length - 1; i >= 0; i--) {
+	for (var i = 0; i< Players.length; i++) {
 		remaningPlayers[i] = {
 			Player: Players[i],
 			Index: i
 		}
 		badMachup[Players[i].Id] = [];
+	};
+	for (var i = 0; i < Players.length; i++) {
+		if (i >= (Players.length/2)){
+			for (var j = i+1; j < Players.length; j++) {
+				if(Players[j].Club != "" && Players[j].Club === Players[i].Club){
+					addToBadMacthup(badMachup,Players[i].Id,Players[j].Id);					
+				}
+			};
+		}
 	};
 
 	while(remaningPlayers.length>=2){

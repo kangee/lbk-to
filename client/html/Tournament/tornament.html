@@ -8,7 +8,7 @@
 	<h4 class="col-sm-offset-1">Players</h4>
 	<ol class="col-sm-offset-1">
 		{{#each Tournament.Players}}
-			<li> <span class="player-name">{{Name}}</span>
+			<li> <span class="player-name">{{Name}} {{Club}}</span>
 				{{#if isTo}} 
 					<button class="delete-player btn btn-xs">&times;</button>  
 					<hr>
@@ -23,6 +23,8 @@
 		  	<div class="form-group">
 		    	<label for="name">Name</label>
 		   		<input type="text" class="form-control" id="name">
+		   		<label for="club">Club</label>
+		   		<input type="text" class="form-control" id="club" />
 		  	</div>
 		 	<button type="submit" class="btn btn-default">Add</button>
 		</form>

@@ -19,9 +19,12 @@ Template.tournament.events({
 	'submit form':function(event){
 		event.preventDefault();
 		var name = document.getElementById("name").value;
+		var club = document.getElementById("club").value;		
 		document.getElementById("name").value = "";
+		document.getElementById("club").value = "";
 		var Player = {
-			Name: name
+			Name: name,
+			Club: club
 		};
 		Meteor.call('addPlayer',Router.current().data().Tournament.Name, Player)
 	},
@@ -34,6 +37,4 @@ Template.tournament.events({
 		var tournamentName = Router.current().data().Tournament.Name;
 		Meteor.call('startTournament',tournamentName);
 	}
-
-
 });
