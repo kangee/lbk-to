@@ -89,8 +89,52 @@ var calcCost= function(player1 , player2){
 }
 
 
-var playerSort = function(player1, player2){
-	return player2.Points - player1.Points
+
+var playerSort = function(tournamentName){
+	return function(player1, player2){
+		//batle points
+		if ((player2.Points - player1.Points)!==0) {
+			return player2.Points - player1.Points
+		}
+
+		var tournament = Tournaments.findOne({Name:tournamentName})
+		var index = IndexOf(player1.Oponents,player2.Id);
+
+		//internal meeting
+		if (index != -1){
+			for (var i = 0; i < tournament.Rounds[index].Games.length; i++) {
+					var result = tournament.Rounds[index].Games[i].Result
+					if(result != null){
+						var arr = result.split("-");
+						var p1 = Number(arr[0]);
+						var p2 = Number(arr[1]);
+						if((p1-p2)!= 0) {
+							if (tournament.Rounds[index].Games[i].PlayerOne == player1.Id){
+								return p2-p1;								
+							}
+							return p1-p2;
+						}
+					}
+				};	
+		}
+		// TODO
+		// most points from top player
+		for (var i = 0; i < tournament.Players.length; i++) {
+			var extraPlyer = tournament.Players[i];
+			var pOneIndex = IndexOf(player1.Oponents, extraPlyer.Id);
+			var pTwoIndex = IndexOf(player2.Oponents, extraPlyer.Id);
+			if (pOneIndex != -1 && pTwoIndex != -1){
+
+			}
+		};
+		};
+
+		// won agenst higest player
+
+		// played agenst higest player
+
+	return 0 // elements are equal
+	}
 }
 
 var hasMeet = function(playerOne,playerTwo){
