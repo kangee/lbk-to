@@ -42,6 +42,12 @@ Template.Tournament_round.events({
 		var tournamentName = Router.current().data().Tournament.Name;
 		var playerOneScore = event.target[0].value;
 		var playerTwoScore = event.target[1].value;
+
+		if (Number(playerOneScore) + Number(playerTwoScore) != 20){
+			alert("sum shuld be 20");
+			return
+		}
+
 		Meteor.call("reportResult" , tournamentName, Router.current().data().Round, this.Table , this.PlayerOne , playerOneScore , this.PlayerTwo , playerTwoScore);
 	}
 

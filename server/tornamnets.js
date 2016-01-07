@@ -69,7 +69,6 @@ Meteor.methods({
 		_rounds[round-1].done = true;
 		var next = Number(round) + 1;
 		Meteor.call("pairRound",tournamentName, next);
-
 	}
 })
 
