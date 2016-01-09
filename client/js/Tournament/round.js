@@ -44,7 +44,7 @@ Template.Tournament_round.events({
 		var playerTwoScore = event.target[1].value;
 
 		if (Number(playerOneScore) + Number(playerTwoScore) != 20){
-			alert("sum shuld be 20");
+			alert("sum should be 20");
 			return
 		}
 
