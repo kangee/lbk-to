@@ -6,19 +6,85 @@
 		<ol>
 			{{#each Games Tournamnet Round}}
 				<li>
-					<form class="form-inline">
-						{{Name PlayerOne}} -VS- {{Name PlayerTwo}}
-						{{#if notDone}}
-							{{#if isTo}}
-								<input type="number" required/> 
-								<input type="number" required/>
-								<button type="submit" class="btn btn-default">Report</button>
+					<div class="list-game">
+						<div class="col-xs-12">
+							{{#if notDone}}
+								{{#if isTo}}
+									<button class="btn btn-default player-one-report">Report</button>
+								{{/if}}
 							{{/if}}
-						{{else}}
-						{{Result}}
-						{{/if}}
-					</form>
+							{{Name PlayerOne}} -VS- {{Name PlayerTwo}}
+							{{#if notDone}}
+								{{#if isTo}}
+									<button class="btn btn-default player-two-report">Report</button>
+								{{/if}}
+							{{else}}
+							{{Result}}
+							{{/if}}
+						</div>
+						{{#if notDone}}
+						<div class="report-field report-field-player-one col-xs-6 hidden">
+							<form>
+								<div class="row">
+									<div class="form-group col-xs-6">
+										<label >{{Name PlayerOne}}</label>
+										<input type="number" name="player-one" requierd/>
+									</div>
+									<div class="form-group col-xs-6">
+										<label>{{Name PlayerTwo}}</label>
+										<input type="number" name="player-two" requierd/>
+									</div>
+								</div>
+								<label>{{#if PlayerOneSubmited}}You have already submited{{else}}{{Name PlayerTwo}}{{/if}}</label>
+								<div class="{{#if PlayerOneSubmited}}hidden{{/if}}">
+									<input type="text" name="opponent" class="hidden" value={{PlayerTwo}}>
+									<div class="row">
+										<div class="form-group col-xs-6">
+											<label>Impresion</label>
+											<input type="number" name="impresion" requierd/>
+										</div>
+										<div class="form-group col-xs-6">
+											<label>Expresion</label>
+											<input type="number" name="expresion" requierd/>
+										</div>
+									</div>
+								</div>
 
+								<input type="submit" class="btn btn-default"/>
+							</form>
+						</div>
+
+						<div class="report-field report-field-player-two col-xs-6 hidden">
+							<form>
+								<div class="row">
+									<div class="form-group col-xs-6">
+										<label>{{Name PlayerTwo}}</label>
+										<input type="number" name="player-two" requierd/>
+									</div>
+									<div class="form-group col-xs-6">
+										<label>{{Name PlayerOne}}</label>
+										<input type="number" name="player-one" requierd/>
+									</div>
+								</div>
+								<label>{{#if PlayerTwoSubmited}}You have already submited{{else}}{{Name PlayerOne}}{{/if}}</label>
+								<div>
+									<input type="text" name="opponent" class="hidden" value={{PlayerOne}}>
+									<div class="row">
+										<div class="form-group col-xs-6">
+											<label>Impresion</label>
+											<input type="number" name="impresion" requierd/>
+										</div>
+										<div class="form-group col-xs-6">
+											<label>Expresion</label>
+											<input type="number" name="expresion" requierd/>
+										</div>
+									</div>
+								</div>
+								<input type="submit" class="btn btn-default"/>
+							</form>
+						</div>
+						{{/if}}
+					</div>
 				</li>
 			{{/each}}
 		</ol>

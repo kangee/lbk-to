@@ -36,19 +36,30 @@ Template.Tournament_round.helpers({
 });
 
 Template.Tournament_round.events({
-
 	"submit form":function(event){
 		event.preventDefault();
+		console.log("for submit");
 		var tournamentName = Router.current().data().Tournament.Name;
-		var playerOneScore = event.target[0].value;
-		var playerTwoScore = event.target[1].value;
+		var playerOneScore = event.target["player-one"].value;
+		var playerTwoScore = event.target["player-two"].value;
+		var opponent = event.target["opponent"].value;
+		var impresion = event.target["impresion"].value;
+		var expresion = event.target["expresion"].value;
 
 		if (Number(playerOneScore) + Number(playerTwoScore) != 20){
 			alert("sum should be 20");
 			return
 		}
 
-		Meteor.call("reportResult" , tournamentName, Router.current().data().Round, this.Table , this.PlayerOne , playerOneScore , this.PlayerTwo , playerTwoScore);
-	}
+		Meteor.call("reportResult" , tournamentName, Router.current().data().Round, this.Table , this.PlayerOne , playerOneScore , this.PlayerTwo , playerTwoScore, opponent, impresion, expresion);
+	},
+	"click .player-one-report":function(event){
+		event.preventDefault();
+		$(event.toElement).parent().parent().children(".report-field-player-one").toggleClass("hidden");
+	},
 
+	"click .player-two-report":function(event){
+		event.preventDefault();
+		$(event.toElement).parent().parent().children(".report-field-player-two").toggleClass("hidden");
+	}
 });

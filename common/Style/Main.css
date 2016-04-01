@@ -6,3 +6,23 @@ input {
 	display: inline-block;
 	min-width: 180px;
 }
+
+.hidden{
+	display: none;
+}
+
+label{
+	display: block;
+}
+
+ol li:nth-child(odd) { background: lightsteelblue; }
+
+.report-field{
+	width: 50%;
+	overflow: hidden;
+}
+
+.list-game{
+	overflow: hidden;
+	margin-top: -1em;
+}

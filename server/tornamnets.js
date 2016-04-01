@@ -12,6 +12,8 @@ Meteor.methods({
 		var id = new Mongo.ObjectID();
 		_player.Id = id._str;
 		_player.Points = 0;
+		_player.Impresion = 0;
+		_player.Expresion = 0;
 		_player.Oponents = [];
 		_player.Tables = [];
 		Tournaments.update({ Name: tournamentName },{ $push: { Players: _player }})
@@ -40,22 +42,64 @@ Meteor.methods({
 			Tournaments.update({Name:tournamentName},{$set:{Players: a}});
 		}
 	},
-	reportResult:function(tournamentName, round , table , playerOne , playerOneScore , playerTwo , playerTwoScore){
+	reportResult:function(tournamentName, round , table , playerOne , playerOneScore , playerTwo , playerTwoScore, opponent, impresion, expresion){
 		var tournament = Tournaments.findOne({Name:tournamentName});
 		var _rounds = tournament.Rounds;
 		var _games = _rounds[round-1].Games;
 		var _players = tournament.Players;
+		var gameDone = false;
+		var reportSoftScore = playerTwo === opponent && !_games[table -1].PlayerOneSubmited || playerOne === opponent && !_games[table -1].PlayerTwoSubmited;
 
-		_games[table-1].Result = playerOneScore + "-" + playerTwoScore;
 
-		for (var i = _players.length - 1; i >= 0; i--) {
-			if (_players[i].Id === playerOne){
-				_players[i].Points = Number(_players[i].Points) + Number(playerOneScore);
+		console.log(tournamentName);
+		console.log(round);
+		console.log(table);
+		console.log(playerOne);
+		console.log(playerOneScore);
+		console.log(playerTwo);
+		console.log(playerTwoScore);
+		console.log(opponent);
+		console.log(impresion);
+		console.log(expresion);
+
+
+
+		if(_games[table-1].TempResult != null && _games[table-1].TempResult === playerOneScore + "-" + playerTwoScore){
+			_games[table-1].Result = playerOneScore + "-" + playerTwoScore;
+			gameDone = true;
+			console.log("game is done");
+		} 
+
+		_games[table-1].TempResult = playerOneScore + "-" + playerTwoScore;
+		
+		if(gameDone || reportSoftScore){
+			for (var i = _players.length - 1; i >= 0; i--) {
+				if(gameDone){
+					if (_players[i].Id === playerOne){
+						_players[i].Points = Number(_players[i].Points) + Number(playerOneScore);
+						console.log("player one score added");
+					}
+					if (_players[i].Id === playerTwo){
+						_players[i].Points = Number(_players[i].Points) + Number(playerTwoScore);
+						console.log("player two score added");
+					}
+				}
+				if(reportSoftScore){
+					if (_players[i].Id === opponent){
+							_players[i].Impresion = Number(_players[i].Impresion) + Number(impresion);
+							_players[i].Expresion = Number(_players[i].Expresion) + Number(expresion);
+							console.log("opponent soft score added");
+
+						if(opponent === playerOne){
+							_games[table-1].PlayerTwoSubmited = true;
+						}
+						if(opponent === playerTwo){
+							_games[table-1].PlayerOneSubmited = true;
+						}
+					}
+				}
 			}
-			if (_players[i].Id === playerTwo){
-				_players[i].Points = Number(_players[i].Points) + Number(playerTwoScore);
-			}
-		};
+		}
 		
 		var a = mergeSort(_players,playerSort(tournament.Name));
 
@@ -120,7 +164,6 @@ var playerSort = function(tournamentName){
 					}
 				};	
 		}
-		// TODO
 		// most points from top player if both has meet the same
 		for (var i = 0; i < tournament.Players.length; i++) {
 			var extraPlyer = tournament.Players[i];
@@ -196,7 +239,7 @@ var playerSort = function(tournamentName){
 			}
 		}
 		console.log("Players are equal:"+ player1.Name +"-"+player2.Name);
-	return 0 // elements are equal
+		return 0 // elements are equal
 	}
 }
 
@@ -318,7 +361,10 @@ var createGame = function(Players, playerOneIndex ,playerTwoIndex, tables ){
 	game = {
 		PlayerOne: Players[playerOneIndex].Id,
 		PlayerTwo: Players[playerTwoIndex].Id,
+		PlayerOneSubmited: false,
+		PlayerTwoSubmited: false,
 		Result: null,
+		TempResult: null,
 		Table: table
 	};
 	return game;
