@@ -2,17 +2,22 @@
 	{{#if notStarted}}
 		{{#if isTo}}
 			<button class="col-sm-offset-3 btn btn-lg start-tournament">Start Tournament!</button>
+			<button id="sort-on-ranking" class="col-sm-offset-3 btn btn-lg ">Sort on Ranking</button>
 		{{/if}}
 	{{/if}}
 
 	<h4 class="col-sm-offset-1">Players</h4>
 	<ol class="col-sm-offset-1">
 		{{#each Tournament.Players}}
-			<li> <span class="player-name">{{Name}} {{Club}}</span>
-				{{#if isTo}} 
-					<button class="delete-player btn btn-xs">&times;</button>  
-					<hr>
-				{{/if}}
+			<li> 
+				<div class="col-xs-12">
+					<div class="player-name col-xs-4">{{Name}}</div>
+					<div class="col-xs-2">Club: {{Club}}</div>
+					<div class="col-xs-5">Rank: {{Rank}}</div>
+					{{#if isTo}} 
+						<button class="delete-player btn btn-xs">&times;</button>  
+					{{/if}}
+				</div>
 			</li>
 		{{/each}}
 	</ol>

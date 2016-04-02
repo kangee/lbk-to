@@ -2,17 +2,34 @@ input {
 	max-width: 280px;
 }
 
+.number-input{
+	width: 50%;
+}
+
 .player-name{
 	display: inline-block;
 	min-width: 180px;
 }
 
+li > div{
+	float: none !important;
+	display: inline-block;
+}
 .hidden{
 	display: none;
 }
 
+.btn{
+	margin: 0.5em;
+}
+
 label{
 	display: block;
+}
+
+li{
+
+	line-height: 32px;
 }
 
 ol li:nth-child(odd) { background: lightsteelblue; }
@@ -24,7 +41,6 @@ ol li:nth-child(odd) { background: lightsteelblue; }
 
 .list-game{
 	overflow: hidden;
-	margin-top: -1em;
 }
 
 .navbar{

@@ -25,6 +25,58 @@ Meteor.methods({
 		Tournaments.update({ Name : tournamentName } ,{ $set : {started: true } } );
 		Meteor.call("pairRound",tournamentName,1);		
 	},
+	sortOnRanking:function(tournamentName){
+		
+		var url = "http://www.svenska40k.se/rank.php";
+		var tournament = Tournaments.findOne({Name:tournamentName});
+		//this.unblock();
+		try{
+			var res = HTTP.call('get',url)
+			var badString2 = "<script language=\"JavaScript\" src=\"http:\/\/convert.rss-to-javascript.com/?src=http://voxnovus.wordpress.com/feed/&desc=0&desc_max=0&chan=1&simple_chan=0&font=Arial&fgcolor=&bgcolor=&date=0&target=&num=3&target=&use_lists=1&font_size=\" ></script><noscript>Your browser does not support JavaScript. <a title='RSS-to-JavaScript.com: Free RSS to JavaScript Converter' href=http://convert.rss-to-javascript.com/?src=http://voxnovus.wordpress.com/feed/&desc=0&desc_max=0&chan=1&simple_chan=0&font=&fgcolor=&bgcolor=&date=0&target=&num=3&target=&use_lists=1&font_size=&as_html=1 >Click to read the latest news</a>.</noscript>"
+			var badString1 = "<script language=\"JavaScript\" src=\"http:\/\/convert.rss-to-javascript.com/?src=http://egges40k.wordpress.com/feed/&desc=0&desc_max=0&chan=1&simple_chan=0&font=Arial&fgcolor=&bgcolor=&date=0&target=&num=3&target=&use_lists=1&font_size=\" ></script><noscript>Your browser does not support JavaScript. <a title='RSS-to-JavaScript.com: Free RSS to JavaScript Converter' href=http://convert.rss-to-javascript.com/?src=http://egges40k.wordpress.com/feed/&desc=0&desc_max=0&chan=1&simple_chan=0&font=&fgcolor=&bgcolor=&date=0&target=&num=3&target=&use_lists=1&font_size=&as_html=1 >Click to read the latest news</a>.</noscript>"
+			if(res.statusCode === 200){
+				res.content = res.content.replace(/<br>/g, " ");
+				res.content = res.content.replace(badString1, "");
+				res.content = res.content.replace(badString2, "");
+
+				xml2js.parseString(res.content, function (jsError, jsResult) {
+                    if(jsError === null){
+                    	
+                    	var tableRows = jsResult.html.body[0].div[0].div[3].table[0].tr.splice(1);
+                    	for (var i = tournament.Players.length - 1; i >= 0; i--) {
+                    		for (var j = tableRows.length - 1; j >= 0; j--) {
+                    			if(tableRows[j].td[1].a[0]._.startsWith(tournament.Players[i].Name)){
+                    				tournament.Players[i].Rank = tableRows[j].td[0];
+                    				continue;
+                    			}
+                    			
+                       		};                 		
+                    	};
+                    	var a = tournament.Players.sort(function(a,b){
+                    		if(typeof a.Rank !== 'undefined' && typeof b.Rank !== 'undefined'){
+                    		return a.Rank-b.Rank;
+                    		}else if( typeof a.Rank === 'undefined' && typeof b.Rank === 'undefined'){
+                    			return 0;
+                    		}else if(typeof a.Rank === 'undefined'){
+                    			return 1;
+                    		}else {
+                    			return -1;
+                    		}
+
+                    	});
+                    	console.log(a);
+                    	Tournaments.update({Name:tournamentName},{$set:{Players: a}});
+                    }else{
+                    	console.log("Error parsing svenska40k");
+                    	console.error(jsError);
+                    }
+                });
+			}
+		} catch(e){
+			console.log(e);
+		}
+
+	},
 	pairRound:function(tournamentName,round){
 		var tournament = Tournaments.findOne({Name:tournamentName});
 		var _rounds = tournament.Rounds;
@@ -53,7 +105,6 @@ Meteor.methods({
 		if(_games[table-1].TempResult != null && _games[table-1].TempResult === playerOneScore + "-" + playerTwoScore){
 			_games[table-1].Result = playerOneScore + "-" + playerTwoScore;
 			gameDone = true;
-			console.log("game is done");
 		} 
 
 		_games[table-1].TempResult = playerOneScore + "-" + playerTwoScore;
@@ -63,18 +114,15 @@ Meteor.methods({
 				if(gameDone){
 					if (_players[i].Id === playerOne){
 						_players[i].Points = Number(_players[i].Points) + Number(playerOneScore);
-						console.log("player one score added");
 					}
 					if (_players[i].Id === playerTwo){
 						_players[i].Points = Number(_players[i].Points) + Number(playerTwoScore);
-						console.log("player two score added");
 					}
 				}
 				if(reportSoftScore){
 					if (_players[i].Id === opponent){
 							_players[i].Impresion = Number(_players[i].Impresion) + Number(impresion);
 							_players[i].Expresion = Number(_players[i].Expresion) + Number(expresion);
-							console.log("opponent soft score added");
 
 						if(opponent === playerOne){
 							_games[table-1].PlayerTwoSubmited = true;

@@ -28,3 +28,5 @@ npm-container
 reactive-dict
 standard-minifier-css
 standard-minifier-js
+http
+peerlibrary:xml2js

@@ -36,5 +36,9 @@ Template.tournament.events({
 	'click .start-tournament':function(){
 		var tournamentName = Router.current().data().Tournament.Name;
 		Meteor.call('startTournament',tournamentName);
+	},
+		'click #sort-on-ranking':function(){
+		var tournamentName = Router.current().data().Tournament.Name;
+		Meteor.call('sortOnRanking',tournamentName);
 	}
 });
