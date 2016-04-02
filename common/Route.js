@@ -54,6 +54,15 @@ Router.map(function() {
 			return {Tournament: Tournaments.findOne({Name: _name})};	
 		}
 	});
+	this.route('tournamentResult',{
+		path: 'tournament/:_name/result',
+		template: 'Tournament_Result',
+		layoutTemplate: 'Tournament_main',
+		data: function(){
+			var _name = this.params._name;
+			return {Tournament: Tournaments.findOne({Name: _name})};	
+		}
+	});
 
 	this.route('createTournament',{
 		path: 'createTournament',

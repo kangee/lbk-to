@@ -50,20 +50,6 @@ Meteor.methods({
 		var gameDone = false;
 		var reportSoftScore = playerTwo === opponent && !_games[table -1].PlayerOneSubmited || playerOne === opponent && !_games[table -1].PlayerTwoSubmited;
 
-
-		console.log(tournamentName);
-		console.log(round);
-		console.log(table);
-		console.log(playerOne);
-		console.log(playerOneScore);
-		console.log(playerTwo);
-		console.log(playerTwoScore);
-		console.log(opponent);
-		console.log(impresion);
-		console.log(expresion);
-
-
-
 		if(_games[table-1].TempResult != null && _games[table-1].TempResult === playerOneScore + "-" + playerTwoScore){
 			_games[table-1].Result = playerOneScore + "-" + playerTwoScore;
 			gameDone = true;
@@ -103,16 +89,19 @@ Meteor.methods({
 		
 		var a = mergeSort(_players,playerSort(tournament.Name));
 
-		Tournaments.update({Name:tournament.Name},{$set: {Rounds: _rounds, Players: a}});
 
+
+		Tournaments.update({Name:tournament.Name},{$set: {Rounds: _rounds, Players: a}});
 		for (var i = _games.length - 1; i >= 0; i--) {
 			if (_games[i].Result === null){
 				return
 			}
 		};
 		_rounds[round-1].done = true;
+
+		Tournaments.update({Name:tournament.Name},{$set: {Rounds: _rounds, Players: a}});
 		var next = Number(round) + 1;
-		Meteor.call("pairRound",tournamentName, next);
+		Meteor.call("pairRound",tournamentName,next);
 	}
 })
 

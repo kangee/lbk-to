@@ -25,6 +25,16 @@ Template.Tournament_nav.helpers({
 			return "active"
 		}
 		return "";
+	},
+	resultURL: function(){
+		var name = Router.current().data().Tournament.Name
+		return "/tournament/"+name+"/result"
+	},
+	activeResultLink: function(){
+		if(Router.current().url.endsWith("result")){
+			return "active"
+		}
+		return "";
 	}
 	
 })

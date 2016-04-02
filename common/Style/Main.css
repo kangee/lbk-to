@@ -26,3 +26,7 @@ ol li:nth-child(odd) { background: lightsteelblue; }
 	overflow: hidden;
 	margin-top: -1em;
 }
+
+.navbar{
+	margin-bottom: 0;
+}

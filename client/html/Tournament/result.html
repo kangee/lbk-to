@@ -1,5 +1,31 @@
 <template name="Tournament_Result">
-
-	<h2>Tournamnet Results!</h2>
-
+	<h2>Tournamnet Results</h2>
+	{{#if viewResult}}
+		<h3>Total Points</h3>
+		<ol>
+			{{#each Total}}
+				<li>{{Name}} - {{Points}}</li>
+			{{/each}}
+		</ol>
+		<h3>Battle Points</h3>
+		<ol>
+			{{#each BattlePoints}}
+				<li>{{Name}} - {{Points}}</li>
+			{{/each}}
+		</ol>
+		<h3>Impresion Points</h3>
+		<ol>
+			{{#each ImpresionList}}
+				<li>{{Name}} - {{Impresion}}</li>
+			{{/each}}
+		</ol>
+		<h3>Expresion Points</h3>
+		<ol>
+			{{#each ExpresionList}}
+				<li>{{Name}} - {{Expresion}}</li>
+			{{/each}}
+		</ol>
+	{{else}}
+		<h3>Arent ready yeat</h3>
+	{{/if}}
 </template>
