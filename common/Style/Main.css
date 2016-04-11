@@ -27,8 +27,10 @@ label{
 	display: block;
 }
 
+li p {
+	display: inline-block;
+}
 li{
-
 	line-height: 32px;
 }
 
