@@ -52,11 +52,22 @@ Template.tournament.events({
 		event.preventDefault();
 		console.log(Meteor.user());
 		var userProfile = Meteor.user().profile;
-		var Player = {
-			Name: userProfile.Name,
-			Club: userProfile.Club,
-			User: Meteor.user().username
+
+		if(userProfile != null &&  userProfile.Name != null){
+			var Player = {
+				Name: userProfile.Name,
+				Club: userProfile.Club,
+				User: Meteor.user().username
+			}
+		} else{
+			var Player = {
+				Name: Meteor.user().username,
+				Club: "",
+				User: Meteor.user().username
+			}
 		}
+
+		
 		Meteor.call('addPlayer',Router.current().data().Tournament.Name, Player)
 	}
 });

@@ -436,7 +436,7 @@ var matchPlayers= function(Players, ClubParing){
 		for (var i = 0; i < Players.length; i++) {
 			if (i >= (Players.length/2)){
 				for (var j = i+1; j < Players.length; j++) {
-					if(Players[j].Club != "" && Players[j].Club === Players[i].Club){
+					if(Players[j].Club != null && Players[j].Club != "" && Players[j].Club === Players[i].Club){
 						addToBadMacthup(badMachup,Players[i].Id,Players[j].Id);					
 					}
 				};
