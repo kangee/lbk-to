@@ -10,7 +10,7 @@
 	<div>
 		<p class="col-sm-offset-2">{{profile.Name}}</p>
 		<p class="col-sm-offset-2">{{profile.Email}}</p>
-		<p class="col-sm-offset-2">{{profile.Location}}</p>
+		<p class="col-sm-offset-2">{{profile.Club}}</p>
 		<button class="toggle-view-profile btn btn-default col-sm-offset-2">Edit</button>
 	</div>
 </template>
@@ -31,9 +31,9 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<label for="profile-location-input" class="col-sm-2 control-label">Location:</label>
+				<label for="profile-club-input" class="col-sm-2 control-label">Club:</label>
 				<div class="col-sm-10">
-					<input id="profile-location-input" class="form-control" type="text" value={{profile.Location}} />
+					<input id="profile-club-input" class="form-control" type="text" value={{profile.Club}} />
 				</div>
 			</div>
 			<div class="form-group">

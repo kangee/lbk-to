@@ -34,12 +34,12 @@ Template.user.events({
 
 	var name = document.getElementById("profile-name-input").value;
 	var email = document.getElementById("profile-email-input").value;
-	var location = document.getElementById("profile-location-input").value;
+	var club = document.getElementById("profile-club-input").value;
 
 	var profile = {
 		Name: name,
 		Email: email,
-		Location: location
+		Club: club
 	}
 	Meteor.users.update({_id:Meteor.user()._id}, {
         $set: {profile: profile}
