@@ -32,16 +32,6 @@ Template.Tournament_round.helpers({
 	notDone:function(){
 		return this.Result === null;
 	},
-	readyForPairing:function(){
-
-		var tournamnet = Router.current().data().Tournament;
-		var round = Router.current().data().Round;
-		if (round === "1"){
-			return tournamnet.started;
-		}else{
-			return tournamnet.Rounds[round-2].done;
-		}
-	},
 	TempResult:function(player){
 		if(this.TempResult !== null){
 			var results = this.TempResult.split("-");

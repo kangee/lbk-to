@@ -85,7 +85,7 @@ Meteor.methods({
 		var a = mergeSort(_players,playerSort(tournament.Name));
 
 		if(round <= _rounds.length){
-			var games = matchPlayers(_players);
+			var games = matchPlayers(_players, tournament.ClubParing);
 
 			_rounds[round-1].Games = games;
 			_rounds[round-1].paried = true;
@@ -150,6 +150,12 @@ Meteor.methods({
 		Tournaments.update({Name:tournament.Name},{$set: {Rounds: _rounds, Players: a}});
 		var next = Number(round) + 1;
 		Meteor.call("pairRound",tournamentName,next);
+	},
+	sort:function(tournamentName){
+		var tournament = Tournaments.findOne({Name:tournamentName});
+		var _players = tournament.Players;
+		var a = mergeSort(_players,playerSort(tournament.Name));
+		Tournaments.update({Name:tournament.Name},{$set: {Players: a}});
 	}
 })
 
@@ -182,95 +188,99 @@ var playerSort = function(tournamentName){
 
 		var tournament = Tournaments.findOne({Name:tournamentName})
 		var index = IndexOf(player1.Oponents,player2.Id);
-
 		//internal meeting
-		if (index != -1){
-			for (var i = 0; i < tournament.Rounds[index].Games.length; i++) {
-					var result = tournament.Rounds[index].Games[i].Result
+		if (index != -1){			
+					var result = tournament.Rounds[index].Games[Number(player1.Tables[index]-1)].Result
 					if(result != null){
 						var arr = result.split("-");
 						var p1 = Number(arr[0]);
 						var p2 = Number(arr[1]);
 						if((p1-p2)!= 0) {
 							console.log("Sorted on internal meeting:"+ player1.Name +"-"+player2.Name);
-							if (tournament.Rounds[index].Games[i].PlayerOne == player1.Id){
+							if (tournament.Rounds[index].Games[Number(player1.Tables[index]-1)].PlayerOne == player1.Id){
 								return p2-p1;								
 							}
 							return p1-p2;
 						}
 					}
-				};	
 		}
 		// most points from top player if both has meet the same
 		for (var i = 0; i < tournament.Players.length; i++) {
 			var extraPlyer = tournament.Players[i];
-			var pOneIndex = IndexOf(player1.Oponents, extraPlyer.Id);
-			var pTwoIndex = IndexOf(player2.Oponents, extraPlyer.Id);
-			if (pOneIndex != -1 && pTwoIndex != -1){
-				for (var j = 0; j<tournament.Rounds[pOneIndex].Games;j++){
-					if(PlayedInGame(tournament.Rounds[pOneIndex].Games[j],player1.Id)){
-						var pOnePoints = pointsFromGame(tournament.Rounds[pOneIndex].Games[j],player1.Id);
+			if(extraPlyer.Id != player1.ID && extraPlyer.Id != player2.Id){
+				var pOneIndex = IndexOf(player1.Oponents, extraPlyer.Id);
+				var pTwoIndex = IndexOf(player2.Oponents, extraPlyer.Id);
+				if (pOneIndex != -1 && pTwoIndex != -1){
+					for (var j = 0; j<tournament.Rounds[pOneIndex].Games.length;j++){
+						if(PlayedInGame(tournament.Rounds[pOneIndex].Games[j],player1.Id)){
+							var pOnePoints = pointsFromGame(tournament.Rounds[pOneIndex].Games[j],player1.Id);
+						}
 					}
-				}
-				for (var j = 0; j<tournament.Rounds[pTwoIndex].Games;j++){
-					if(PlayedInGame(tournament.Rounds[pTwoIndex].Games[j],player2.Id)){
-						var pTwoPoints = pointsFromGame(tournament.Rounds[pTwoIndex].Games[j],player2.Id);
+					for (var j = 0; j<tournament.Rounds[pTwoIndex].Games.length;j++){
+						if(PlayedInGame(tournament.Rounds[pTwoIndex].Games[j],player2.Id)){
+							var pTwoPoints = pointsFromGame(tournament.Rounds[pTwoIndex].Games[j],player2.Id);
+						}
 					}
-				}
-				if ((pTwoPoints - pOnePoints)!= 0){
-					console.log("Sorted on same opponent:"+ player1.Name +"-"+player2.Name);
-					return pTwoPoints - pOnePoints;
+					if ((pTwoPoints - pOnePoints)!= 0){
+						console.log("Sorted on same opponent:"+ player1.Name +"-"+player2.Name);
+						return pTwoPoints - pOnePoints;
+					}
 				}
 			}
-
 		};
+
 		// won agenst higest player
 		for (var i = 0; i < tournament.Players.length; i++) {
 			var extraPlyer = tournament.Players[i];
-			var pOneIndex = IndexOf(player1.Oponents, extraPlyer.Id);
-			var pTwoIndex = IndexOf(player2.Oponents, extraPlyer.Id);
-			if (pOneIndex != -1 && pTwoIndex == -1){
-				for (var j = 0; j<tournament.Rounds[pOneIndex].Games;j++){
-					if(PlayedInGame(tournament.Rounds[pOneIndex].Games[j],player1.Id)){
-						var pOnePoints = pointsFromGame(tournament.Rounds[pOneIndex].Games[j],player1.Id);
-						if(pOnePoints>10){
-							console.log("Sorted on won agenst top:"+ player1.Name +"-"+player2.Name);
-							return -1;
+			if(extraPlyer.Id != player1.ID && extraPlyer.Id != player2.Id){
+				var pOneIndex = IndexOf(player1.Oponents, extraPlyer.Id);
+				var pTwoIndex = IndexOf(player2.Oponents, extraPlyer.Id);
+				if (pOneIndex != -1 && pTwoIndex == -1){
+					for (var j = 0; j<tournament.Rounds[pOneIndex].Games.length;j++){
+						if(PlayedInGame(tournament.Rounds[pOneIndex].Games[j],player1.Id)){
+							var pOnePoints = pointsFromGame(tournament.Rounds[pOneIndex].Games[j],player1.Id);
+							if(pOnePoints>10){
+								console.log("Sorted on won agenst top:"+ player1.Name +"-"+player2.Name);
+								return -1;
+							}
 						}
 					}
 				}
-			}
-			if (pOneIndex == -1 && pTwoIndex != -1){
-				for (var j = 0; j<tournament.Rounds[pTwoIndex].Games;j++){
-					if(PlayedInGame(tournament.Rounds[pTwoIndex].Games[j],player2.Id)){
-						var pTwoPoints = pointsFromGame(tournament.Rounds[pTwoIndex].Games[j],player2.Id);
-						if(pTwoPoints>10){
-							console.log("Sorted on won agenst top:"+ player1.Name +"-"+player2.Name);
-							return 1;
+				if (pOneIndex == -1 && pTwoIndex != -1){
+					for (var j = 0; j<tournament.Rounds[pTwoIndex].Games.length;j++){
+						if(PlayedInGame(tournament.Rounds[pTwoIndex].Games[j],player2.Id)){
+							var pTwoPoints = pointsFromGame(tournament.Rounds[pTwoIndex].Games[j],player2.Id);
+							if(pTwoPoints>10){
+								console.log("Sorted on won agenst top:"+ player1.Name +"-"+player2.Name);
+								return 1;
+							}
 						}
 					}
 				}
 			}
 		}
 
+		debugger;
 		// played agenst higest player
 		for (var i = 0; i < tournament.Players.length; i++) {
 			var extraPlyer = tournament.Players[i];
-			var pOneIndex = IndexOf(player1.Oponents, extraPlyer.Id);
-			var pTwoIndex = IndexOf(player2.Oponents, extraPlyer.Id);
-			if (pOneIndex != -1 && pTwoIndex == -1){
-				for (var j = 0; j<tournament.Rounds[pOneIndex].Games;j++){
-					if(PlayedInGame(tournament.Rounds[pOneIndex].Games[j],player1.Id)){
-						console.log("Sorted on played agenst top:"+ player1.Name +"-"+player2.Name);
-						return -1;
+			if(extraPlyer.Id != player1.ID && extraPlyer.Id != player2.Id){
+				var pOneIndex = IndexOf(player1.Oponents, extraPlyer.Id);
+				var pTwoIndex = IndexOf(player2.Oponents, extraPlyer.Id);
+				if (pOneIndex != -1 && pTwoIndex == -1){
+					for (var j = 0; j<tournament.Rounds[pOneIndex].Games.length;j++){
+						if(PlayedInGame(tournament.Rounds[pOneIndex].Games[j],player1.Id)){
+							console.log("Sorted on played agenst top:"+ player1.Name +"-"+player2.Name);
+							return -1;
+						}
 					}
 				}
-			}
-			if (pOneIndex == -1 && pTwoIndex != -1){
-				for (var j = 0; j<tournament.Rounds[pTwoIndex].Games;j++){
-					if(PlayedInGame(tournament.Rounds[pTwoIndex].Games[j],player2.Id)){
-						console.log("Sorted on played agenst top:"+ player1.Name +"-"+player2.Name);
-						return 1;
+				if (pOneIndex == -1 && pTwoIndex != -1){
+					for (var j = 0; j<tournament.Rounds[pTwoIndex].Games.length;j++){
+						if(PlayedInGame(tournament.Rounds[pTwoIndex].Games[j],player2.Id)){
+							console.log("Sorted on played agenst top:"+ player1.Name +"-"+player2.Name);
+							return 1;
+						}
 					}
 				}
 			}
@@ -407,7 +417,7 @@ var createGame = function(Players, playerOneIndex ,playerTwoIndex, tables ){
 	return game;
 }
 
-var matchPlayers= function(Players){
+var matchPlayers= function(Players, ClubParing){
 	
 	var games = [];
 	var remaningPlayers = [];
@@ -421,15 +431,18 @@ var matchPlayers= function(Players){
 		}
 		badMachup[Players[i].Id] = [];
 	};
-	for (var i = 0; i < Players.length; i++) {
-		if (i >= (Players.length/2)){
-			for (var j = i+1; j < Players.length; j++) {
-				if(Players[j].Club != "" && Players[j].Club === Players[i].Club){
-					addToBadMacthup(badMachup,Players[i].Id,Players[j].Id);					
-				}
-			};
-		}
-	};
+
+	if(ClubParing){
+		for (var i = 0; i < Players.length; i++) {
+			if (i >= (Players.length/2)){
+				for (var j = i+1; j < Players.length; j++) {
+					if(Players[j].Club != "" && Players[j].Club === Players[i].Club){
+						addToBadMacthup(badMachup,Players[i].Id,Players[j].Id);					
+					}
+				};
+			}
+		};
+	}
 
 	for (var i = 0; i < Players.length/2; i++) {
 		tables[i] = i+1;
