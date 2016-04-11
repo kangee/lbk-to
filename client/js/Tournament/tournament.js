@@ -50,7 +50,6 @@ Template.tournament.events({
 	},
 	'click .signup':function(event){
 		event.preventDefault();
-		console.log(Meteor.user());
 		var userProfile = Meteor.user().profile;
 
 		if(userProfile != null &&  userProfile.Name != null){

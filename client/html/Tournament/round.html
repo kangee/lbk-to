@@ -9,13 +9,13 @@
 					<div class="list-game">
 						<div class="col-xs-12">
 							{{#if notDone}}
-								{{#if isTo}}
+								{{#if canReport PlayerOne}}
 									<button class="btn btn-default player-one-report">Report</button>
 								{{/if}}
 							{{/if}}
 							<p>{{Name PlayerOne}} -VS- {{Name PlayerTwo}}</p>
 							{{#if notDone}}
-								{{#if isTo}}
+								{{#if canReport PlayerTwo}}
 									<button class="btn btn-default player-two-report">Report</button>
 								{{/if}}
 							{{else}}

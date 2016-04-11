@@ -28,6 +28,16 @@ Template.Tournament_round.helpers({
 	isTo: function(){
 		return Meteor.user().username === Router.current().data().Tournament.TO
 	},
+	canReport: function(id){
+		var playerUserName = "";
+		var players = Router.current().data().Tournament.Players;
+		for (var i = players.length - 1; i >= 0; i--) {
+			if(players[i].Id === id){
+				playerUserName = players[i].User;
+			}
+		};
+		return Meteor.user().username === Router.current().data().Tournament.TO || Meteor.user().username === playerUserName;
+	},
 
 	notDone:function(){
 		return this.Result === null;
