@@ -11,6 +11,13 @@ Template.tournament.helpers({
 	},
 	notStarted:function(){
 		return !Router.current().data().Tournament.started
+	},
+	canSignUp:function(){
+		var tournament = Router.current().data().Tournament;
+		var isSignedUp = tournament.Players.reduce(function(prev,curr){
+			return Meteor.user().profile.Name === curr.Name || prev;
+		}, false);
+		return !tournament.started && !isSignedUp;
 	}
 
 });
@@ -37,8 +44,19 @@ Template.tournament.events({
 		var tournamentName = Router.current().data().Tournament.Name;
 		Meteor.call('startTournament',tournamentName);
 	},
-		'click #sort-on-ranking':function(){
+	'click #sort-on-ranking':function(){
 		var tournamentName = Router.current().data().Tournament.Name;
 		Meteor.call('sortOnRanking',tournamentName);
+	},
+	'click .signup':function(event){
+		event.preventDefault();
+		console.log(Meteor.user());
+		var userProfile = Meteor.user().profile;
+		var Player = {
+			Name: userProfile.Name,
+			Club: userProfile.Club,
+			User: Meteor.user().username
+		}
+		Meteor.call('addPlayer',Router.current().data().Tournament.Name, Player)
 	}
 });

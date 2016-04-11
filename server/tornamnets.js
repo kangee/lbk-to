@@ -31,7 +31,7 @@ Meteor.methods({
 		var tournament = Tournaments.findOne({Name:tournamentName});
 		//this.unblock();
 		try{
-			var res = HTTP.call('get',url)
+			var res = HTTP.call('get',url);
 			var badString2 = "<script language=\"JavaScript\" src=\"http:\/\/convert.rss-to-javascript.com/?src=http://voxnovus.wordpress.com/feed/&desc=0&desc_max=0&chan=1&simple_chan=0&font=Arial&fgcolor=&bgcolor=&date=0&target=&num=3&target=&use_lists=1&font_size=\" ></script><noscript>Your browser does not support JavaScript. <a title='RSS-to-JavaScript.com: Free RSS to JavaScript Converter' href=http://convert.rss-to-javascript.com/?src=http://voxnovus.wordpress.com/feed/&desc=0&desc_max=0&chan=1&simple_chan=0&font=&fgcolor=&bgcolor=&date=0&target=&num=3&target=&use_lists=1&font_size=&as_html=1 >Click to read the latest news</a>.</noscript>"
 			var badString1 = "<script language=\"JavaScript\" src=\"http:\/\/convert.rss-to-javascript.com/?src=http://egges40k.wordpress.com/feed/&desc=0&desc_max=0&chan=1&simple_chan=0&font=Arial&fgcolor=&bgcolor=&date=0&target=&num=3&target=&use_lists=1&font_size=\" ></script><noscript>Your browser does not support JavaScript. <a title='RSS-to-JavaScript.com: Free RSS to JavaScript Converter' href=http://convert.rss-to-javascript.com/?src=http://egges40k.wordpress.com/feed/&desc=0&desc_max=0&chan=1&simple_chan=0&font=&fgcolor=&bgcolor=&date=0&target=&num=3&target=&use_lists=1&font_size=&as_html=1 >Click to read the latest news</a>.</noscript>"
 			if(res.statusCode === 200){

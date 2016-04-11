@@ -22,6 +22,14 @@
 		{{/each}}
 	</ol>
 
+	{{#if currentUser}}
+		{{#if canSignUp}}
+			<div class="col-sm-offset-1">
+				<button class="signup btn btn-default ">Sign up</button>
+			</div>
+		{{/if}}
+	{{/if}}
+
 	{{#if isTo}}
 		<h4 class="col-sm-offset-1">Add Player</h4>
 		<form class="form-inline col-sm-offset-1">
