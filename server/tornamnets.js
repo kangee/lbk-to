@@ -180,7 +180,7 @@ var calcCost= function(player1 , player2){
 
 var playerSort = function(tournamentName){
 	return function(player1, player2){
-		//batle points
+		//batle points tested
 		if ((player2.Points - player1.Points)!==0) {
 			console.log("Sorted on Battle points:"+ player1.Name +"-"+player2.Name);
 			return player2.Points - player1.Points

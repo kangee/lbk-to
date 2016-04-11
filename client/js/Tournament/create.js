@@ -13,7 +13,6 @@ Template.Tournament_create.events({
 	var _clubParing = document.getElementById("tournament-club-paring-input").checked;
 	var _rounds = [];
 
-	debugger;
 	if(date === ""){
 		var now = new Date();
 		date = now.getFullYear() +"-"+ (now.getMonth()+1)+"-" + now.getDate();
