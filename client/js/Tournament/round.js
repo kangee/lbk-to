@@ -54,7 +54,6 @@ Template.Tournament_round.helpers({
 Template.Tournament_round.events({
 	"submit form":function(event){
 		event.preventDefault();
-		console.log("for submit");
 		var tournamentName = Router.current().data().Tournament.Name;
 		var playerOneScore = event.target["player-one"].value;
 		var playerTwoScore = event.target["player-two"].value;
