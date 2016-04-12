@@ -76,7 +76,5 @@ Router.map(function() {
 	    	}
 	    }
 	})
-
-
 });
 
