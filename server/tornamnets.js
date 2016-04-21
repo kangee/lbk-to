@@ -2,160 +2,202 @@ Meteor.publish("tournaments",function(){
     return Tournaments.find({});
 });
 
+require('./validationHelpers.js');
+
 Meteor.methods({
 	createTournament:function(tournament){
-		tournament.TO = Meteor.user().username;
-		Tournaments.insert(tournament);
+		if(Meteor.user()){
+			tournament.TO = Meteor.user().username;
+			Tournaments.insert(tournament);
+		}
 	},
 	addPlayer:function(tournamentName, Player){
-		var _player = Player;
-		var id = new Mongo.ObjectID();
-		_player.Id = id._str;
-		_player.Points = 0;
-		_player.Impresion = 0;
-		_player.Expresion = 0;
-		_player.Oponents = [];
-		_player.Tables = [];
-		Tournaments.update({ Name: tournamentName },{ $push: { Players: _player }})
+		if(Meteor.user()){
+			var tournament = Tournaments.findOne({Name:tournamentName});
+			if(Meteor.validationHelpers.isTo(tournament) || !Meteor.validationHelpers.isSignedUp(tournament, Player)){
+				var _player = Player;
+				var id = new Mongo.ObjectID();
+				_player.Id = id._str;
+				_player.Points = 0;
+				_player.Impresion = 0;
+				_player.Expresion = 0;
+				_player.Oponents = [];
+				_player.Tables = [];
+				Tournaments.update({ Name: tournamentName },{ $push: { Players: _player }})
+			}
+		}
 	},
 	removePlayer:function(tournamentName,PlayerID){
-		Tournaments.update({ Name : tournamentName } ,{ $pull : {Players: { Id:PlayerID } } } );
+		if(Meteor.user()){
+			var tournament = Tournaments.findOne({Name:tournamentName});
+			if(Meteor.validationHelpers.isTo(tournament) || Meteor.validationHelpers.isPlayer(tournament, PlayerID)){
+				Tournaments.update({ Name : tournamentName } ,{ $pull : {Players: { Id:PlayerID } } } );
+			}
+		}
 	},
 	startTournament:function(tournamentName){
-		Tournaments.update({ Name : tournamentName } ,{ $set : {started: true } } );
-		Meteor.call("pairRound",tournamentName,1);		
+		if(Meteor.user()){
+			var tournament = Tournaments.findOne({Name:tournamentName});
+			if(Meteor.validationHelpers.isTo(tournament)){
+				Tournaments.update({ Name : tournamentName } ,{ $set : {started: true } } );
+				Meteor.call("pairRound",tournamentName,1);
+			}
+		}		
 	},
 	sortOnRanking:function(tournamentName){
-		
-		var url = "http://www.svenska40k.se/rank.php";
-		var tournament = Tournaments.findOne({Name:tournamentName});
-		//this.unblock();
-		try{
-			var res = HTTP.call('get',url);
-			var badString2 = "<script language=\"JavaScript\" src=\"http:\/\/convert.rss-to-javascript.com/?src=http://voxnovus.wordpress.com/feed/&desc=0&desc_max=0&chan=1&simple_chan=0&font=Arial&fgcolor=&bgcolor=&date=0&target=&num=3&target=&use_lists=1&font_size=\" ></script><noscript>Your browser does not support JavaScript. <a title='RSS-to-JavaScript.com: Free RSS to JavaScript Converter' href=http://convert.rss-to-javascript.com/?src=http://voxnovus.wordpress.com/feed/&desc=0&desc_max=0&chan=1&simple_chan=0&font=&fgcolor=&bgcolor=&date=0&target=&num=3&target=&use_lists=1&font_size=&as_html=1 >Click to read the latest news</a>.</noscript>"
-			var badString1 = "<script language=\"JavaScript\" src=\"http:\/\/convert.rss-to-javascript.com/?src=http://egges40k.wordpress.com/feed/&desc=0&desc_max=0&chan=1&simple_chan=0&font=Arial&fgcolor=&bgcolor=&date=0&target=&num=3&target=&use_lists=1&font_size=\" ></script><noscript>Your browser does not support JavaScript. <a title='RSS-to-JavaScript.com: Free RSS to JavaScript Converter' href=http://convert.rss-to-javascript.com/?src=http://egges40k.wordpress.com/feed/&desc=0&desc_max=0&chan=1&simple_chan=0&font=&fgcolor=&bgcolor=&date=0&target=&num=3&target=&use_lists=1&font_size=&as_html=1 >Click to read the latest news</a>.</noscript>"
-			if(res.statusCode === 200){
-				res.content = res.content.replace(/<br>/g, " ");
-				res.content = res.content.replace(badString1, "");
-				res.content = res.content.replace(badString2, "");
+		if(Meteor.user()){
+			var url = "http://www.svenska40k.se/rank.php";
+			var tournament = Tournaments.findOne({Name:tournamentName});
+			//this.unblock();
+			if(Meteor.validationHelpers.isTo(tournament)){
+				try{
+					var res = HTTP.call('get',url);
+					var badString2 = "<script language=\"JavaScript\" src=\"http:\/\/convert.rss-to-javascript.com/?src=http://voxnovus.wordpress.com/feed/&desc=0&desc_max=0&chan=1&simple_chan=0&font=Arial&fgcolor=&bgcolor=&date=0&target=&num=3&target=&use_lists=1&font_size=\" ></script><noscript>Your browser does not support JavaScript. <a title='RSS-to-JavaScript.com: Free RSS to JavaScript Converter' href=http://convert.rss-to-javascript.com/?src=http://voxnovus.wordpress.com/feed/&desc=0&desc_max=0&chan=1&simple_chan=0&font=&fgcolor=&bgcolor=&date=0&target=&num=3&target=&use_lists=1&font_size=&as_html=1 >Click to read the latest news</a>.</noscript>"
+					var badString1 = "<script language=\"JavaScript\" src=\"http:\/\/convert.rss-to-javascript.com/?src=http://egges40k.wordpress.com/feed/&desc=0&desc_max=0&chan=1&simple_chan=0&font=Arial&fgcolor=&bgcolor=&date=0&target=&num=3&target=&use_lists=1&font_size=\" ></script><noscript>Your browser does not support JavaScript. <a title='RSS-to-JavaScript.com: Free RSS to JavaScript Converter' href=http://convert.rss-to-javascript.com/?src=http://egges40k.wordpress.com/feed/&desc=0&desc_max=0&chan=1&simple_chan=0&font=&fgcolor=&bgcolor=&date=0&target=&num=3&target=&use_lists=1&font_size=&as_html=1 >Click to read the latest news</a>.</noscript>"
+					if(res.statusCode === 200){
+						res.content = res.content.replace(/<br>/g, " ");
+						res.content = res.content.replace(badString1, "");
+						res.content = res.content.replace(badString2, "");
 
-				xml2js.parseString(res.content, function (jsError, jsResult) {
-                    if(jsError === null){
-                    	
-                    	var tableRows = jsResult.html.body[0].div[0].div[3].table[0].tr.splice(1);
-                    	for (var i = tournament.Players.length - 1; i >= 0; i--) {
-                    		for (var j = tableRows.length - 1; j >= 0; j--) {
-                    			if(tableRows[j].td[1].a[0]._.startsWith(tournament.Players[i].Name)){
-                    				tournament.Players[i].Rank = tableRows[j].td[0];
-                    				continue;
-                    			}
-                    			
-                       		};                 		
-                    	};
-                    	var a = tournament.Players.sort(function(a,b){
-                    		if(typeof a.Rank !== 'undefined' && typeof b.Rank !== 'undefined'){
-                    		return a.Rank-b.Rank;
-                    		}else if( typeof a.Rank === 'undefined' && typeof b.Rank === 'undefined'){
-                    			return 0;
-                    		}else if(typeof a.Rank === 'undefined'){
-                    			return 1;
-                    		}else {
-                    			return -1;
-                    		}
+						xml2js.parseString(res.content, function (jsError, jsResult) {
+		                    if(jsError === null){
+		                    	
+		                    	var tableRows = jsResult.html.body[0].div[0].div[3].table[0].tr.splice(1);
+		                    	for (var i = tournament.Players.length - 1; i >= 0; i--) {
+		                    		for (var j = tableRows.length - 1; j >= 0; j--) {
+		                    			if(tableRows[j].td[1].a[0]._.startsWith(tournament.Players[i].Name)){
+		                    				tournament.Players[i].Rank = tableRows[j].td[0];
+		                    				continue;
+		                    			}
+		                    			
+		                       		};                 		
+		                    	};
+		                    	var a = tournament.Players.sort(function(a,b){
+		                    		if(typeof a.Rank !== 'undefined' && typeof b.Rank !== 'undefined'){
+		                    		return a.Rank-b.Rank;
+		                    		}else if( typeof a.Rank === 'undefined' && typeof b.Rank === 'undefined'){
+		                    			return 0;
+		                    		}else if(typeof a.Rank === 'undefined'){
+		                    			return 1;
+		                    		}else {
+		                    			return -1;
+		                    		}
 
-                    	});
-                    	console.log(a);
-                    	Tournaments.update({Name:tournamentName},{$set:{Players: a}});
-                    }else{
-                    	console.log("Error parsing svenska40k");
-                    	console.error(jsError);
-                    }
-                });
+		                    	});
+		                    	console.log(a);
+		                    	Tournaments.update({Name:tournamentName},{$set:{Players: a}});
+		                    }else{
+		                    	console.log("Error parsing svenska40k");
+		                    	console.error(jsError);
+		                    }
+		                });
+					}
+				} catch(e){
+					console.log(e);
+				}
 			}
-		} catch(e){
-			console.log(e);
 		}
 
 	},
 	pairRound:function(tournamentName,round){
-		var tournament = Tournaments.findOne({Name:tournamentName});
-		var _rounds = tournament.Rounds;
-		var _players = tournament.Players;
+		if(Meteor.user()){
+			var tournament = Tournaments.findOne({Name:tournamentName});
+			if(Meteor.validationHelpers.isTo(tournament)){
+				var _rounds = tournament.Rounds;
+				var _players = tournament.Players;
 
-		var a = mergeSort(_players,playerSort(tournament.Name));
+				var a = mergeSort(_players,playerSort(tournament.Name));
 
-		if(round <= _rounds.length){
-			var games = matchPlayers(_players, tournament.ClubParing);
+				if(round <= _rounds.length){
+					var games = matchPlayers(_players, tournament.ClubParing);
 
-			_rounds[round-1].Games = games;
-			_rounds[round-1].paried = true;
-			Tournaments.update({Name:tournamentName},{$set:{Rounds:_rounds, Players: a}});
-		}else{
-			Tournaments.update({Name:tournamentName},{$set:{Players: a}});
+					_rounds[round-1].Games = games;
+					_rounds[round-1].paried = true;
+					Tournaments.update({Name:tournamentName},{$set:{Rounds:_rounds, Players: a}});
+				}else{
+					Tournaments.update({Name:tournamentName},{$set:{Players: a}});
+				}
+			}
 		}
 	},
 	reportResult:function(tournamentName, round , table , playerOne , playerOneScore , playerTwo , playerTwoScore, opponent, impresion, expresion){
-		var tournament = Tournaments.findOne({Name:tournamentName});
-		var _rounds = tournament.Rounds;
-		var _games = _rounds[round-1].Games;
-		var _players = tournament.Players;
-		var gameDone = false;
-		var reportSoftScore = playerTwo === opponent && !_games[table -1].PlayerOneSubmited || playerOne === opponent && !_games[table -1].PlayerTwoSubmited;
+		if(Meteor.user()){
+			var tournament = Tournaments.findOne({Name:tournamentName});
+			if(meteor.validationHelpers.checkTable(tournament, round , table , playerOne, playerTwo)){
+				var currentPlayerId = null;
 
-		if(_games[table-1].TempResult != null && _games[table-1].TempResult === playerOneScore + "-" + playerTwoScore){
-			_games[table-1].Result = playerOneScore + "-" + playerTwoScore;
-			gameDone = true;
-		} 
-
-		_games[table-1].TempResult = playerOneScore + "-" + playerTwoScore;
-		
-		if(gameDone || reportSoftScore){
-			for (var i = _players.length - 1; i >= 0; i--) {
-				if(gameDone){
-					if (_players[i].Id === playerOne){
-						_players[i].Points = Number(_players[i].Points) + Number(playerOneScore);
-					}
-					if (_players[i].Id === playerTwo){
-						_players[i].Points = Number(_players[i].Points) + Number(playerTwoScore);
-					}
+				if (opponent === playerOne){
+					currentPlayerId = playerTwo;
+				}else if(opponent === playerTwo){
+					currentPlayerId = playerOne;
 				}
-				if(reportSoftScore){
-					if (_players[i].Id === opponent){
-							_players[i].Impresion = Number(_players[i].Impresion) + Number(impresion);
-							_players[i].Expresion = Number(_players[i].Expresion) + Number(expresion);
 
-						if(opponent === playerOne){
-							_games[table-1].PlayerTwoSubmited = true;
-						}
-						if(opponent === playerTwo){
-							_games[table-1].PlayerOneSubmited = true;
+				if(Meteor.validationHelpers.isTo(tournament) || Meteor.validationHelpers.isPlayer(tournament, currentPlayerId)){
+					var _rounds = tournament.Rounds;
+					var _games = _rounds[round-1].Games;
+					var _players = tournament.Players;
+					var gameDone = false;
+					var reportSoftScore = playerTwo === opponent && !_games[table -1].PlayerOneSubmited || playerOne === opponent && !_games[table -1].PlayerTwoSubmited;
+
+					if(_games[table-1].TempResult != null && _games[table-1].TempResult === playerOneScore + "-" + playerTwoScore){
+						_games[table-1].Result = playerOneScore + "-" + playerTwoScore;
+						gameDone = true;
+					} 
+
+					_games[table-1].TempResult = playerOneScore + "-" + playerTwoScore;
+					
+					if(gameDone || reportSoftScore){
+						for (var i = _players.length - 1; i >= 0; i--) {
+							if(gameDone){
+								if (_players[i].Id === playerOne){
+									_players[i].Points = Number(_players[i].Points) + Number(playerOneScore);
+								}
+								if (_players[i].Id === playerTwo){
+									_players[i].Points = Number(_players[i].Points) + Number(playerTwoScore);
+								}
+							}
+							if(reportSoftScore){
+								if (_players[i].Id === opponent){
+										_players[i].Impresion = Number(_players[i].Impresion) + Number(impresion);
+										_players[i].Expresion = Number(_players[i].Expresion) + Number(expresion);
+
+									if(opponent === playerOne){
+										_games[table-1].PlayerTwoSubmited = true;
+									}
+									if(opponent === playerTwo){
+										_games[table-1].PlayerOneSubmited = true;
+									}
+								}
+							}
 						}
 					}
+					
+					var a = mergeSort(_players,playerSort(tournament.Name));
+
+					Tournaments.update({Name:tournament.Name},{$set: {Rounds: _rounds, Players: a}});
+					for (var i = _games.length - 1; i >= 0; i--) {
+						if (_games[i].Result === null){
+							return
+						}
+					};
+					_rounds[round-1].done = true;
+
+					Tournaments.update({Name:tournament.Name},{$set: {Rounds: _rounds, Players: a}});
+					var next = Number(round) + 1;
+					Meteor.call("pairRound",tournamentName,next);
 				}
 			}
 		}
-		
-		var a = mergeSort(_players,playerSort(tournament.Name));
-
-
-
-		Tournaments.update({Name:tournament.Name},{$set: {Rounds: _rounds, Players: a}});
-		for (var i = _games.length - 1; i >= 0; i--) {
-			if (_games[i].Result === null){
-				return
-			}
-		};
-		_rounds[round-1].done = true;
-
-		Tournaments.update({Name:tournament.Name},{$set: {Rounds: _rounds, Players: a}});
-		var next = Number(round) + 1;
-		Meteor.call("pairRound",tournamentName,next);
 	},
 	sort:function(tournamentName){
-		var tournament = Tournaments.findOne({Name:tournamentName});
-		var _players = tournament.Players;
-		var a = mergeSort(_players,playerSort(tournament.Name));
-		Tournaments.update({Name:tournament.Name},{$set: {Players: a}});
+		if(Meteor.user()){
+			var tournament = Tournaments.findOne({Name:tournamentName});
+			if(Meteor.validationHelpers.isTo(tournament)){
+				var _players = tournament.Players;
+				var a = mergeSort(_players,playerSort(tournament.Name));
+				Tournaments.update({Name:tournament.Name},{$set: {Players: a}});
+			}
+		}
 	}
 })
 
