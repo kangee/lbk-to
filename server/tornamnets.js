@@ -123,7 +123,7 @@ Meteor.methods({
 	reportResult:function(tournamentName, round , table , playerOne , playerOneScore , playerTwo , playerTwoScore, opponent, impresion, expresion){
 		if(Meteor.user()){
 			var tournament = Tournaments.findOne({Name:tournamentName});
-			if(meteor.validationHelpers.checkTable(tournament, round , table , playerOne, playerTwo)){
+			if(Meteor.validationHelpers.checkTable(tournament, round , table , playerOne, playerTwo)){
 				var currentPlayerId = null;
 
 				if (opponent === playerOne){
@@ -302,7 +302,6 @@ var playerSort = function(tournamentName){
 			}
 		}
 
-		debugger;
 		// played agenst higest player
 		for (var i = 0; i < tournament.Players.length; i++) {
 			var extraPlyer = tournament.Players[i];
