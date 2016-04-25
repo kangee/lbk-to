@@ -21,7 +21,6 @@ Meteor.validationHelpers = {
 	checkTable: function(tournament, round , table , playerOne, playerTwo){
 		var game = tournament.Rounds[round-1].Games[table-1];
 		if(game.PlayerOne === playerOne && game.PlayerTwo === playerTwo){
-			console.log("validated");
 			return true
 		}
 		return false;
