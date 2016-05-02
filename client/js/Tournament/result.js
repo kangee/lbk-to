@@ -27,6 +27,21 @@ Template.Tournament_Result.helpers({
 
 });
 
+Template.Tournament_Result.events({
+	"click .view-form":function(event){
+		event.preventDefault();
+		$(event.toElement).parent().children("form").toggleClass("hidden");
+	},
+	"submit .battle-points-form":function(event){
+		event.preventDefault();
+		var tournamentName = Router.current().data().Tournament.Name;
+		var change = Number(event.target["number"].value);
+		
+		Meteor.call('updatePoints', tournamentName, this.Id, "Points", change);
+	}
+})
+
+
 var PointSort = function(x ,y){
 	return y.Points - x.Points;
 };

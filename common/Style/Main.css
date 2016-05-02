@@ -38,13 +38,27 @@ ol li:nth-child(odd) { background: lightsteelblue; }
 
 .report-field{
 	width: 50%;
-	overflow: hidden;
+	/*overflow: hidden;*/
 }
 
 .list-game{
-	overflow: hidden;
+	/*overflow: hidden;*/
 }
 
 .navbar{
 	margin-bottom: 0;
 }
+label:hover:after { 
+	content: attr(data-title);
+	position: absolute;
+	display: block;
+	font-size: 0.82em;
+	width: 200%
+	overflow: visible;
+	z-index: 1;
+	line-height: 1em;
+	background: silver;
+
+	white-space:pre;
+
+ }

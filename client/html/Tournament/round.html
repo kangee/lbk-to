@@ -3,6 +3,9 @@
 
 <div class="col-sm-offset-1">
 	{{#if Paired}}
+		{{#if canReDoParing}}
+			<button class="btn btn-lg redo-paring">Redo Paring</button>
+		{{/if}}
 		<ol>
 			{{#each Games Tournamnet Round}}
 				<li>
@@ -19,12 +22,30 @@
 									<button class="btn btn-default player-two-report">Report</button>
 								{{/if}}
 							{{else}}
-							{{Result}}
+								{{Result}}
+								{{#if isTo}}
+									<button class="btn btn-default update-result">Update Result</button>
+									<div class=" admin-update-result col-xs-12 hidden">
+										<form class="admin-submit">
+											<div class="row">
+												<div class="form-group col-xs-6">
+													<label >{{Name PlayerOne}}</label>
+													<input class="number-input" type="number" name="player-one" min="0" max="20" required/>
+												</div>
+												<div class="form-group col-xs-6">
+													<label>{{Name PlayerTwo}}</label>
+													<input class="number-input" type="number" name="player-two" min="0" max="20" required/>
+												</div>
+											</div>
+											<input type="submit" class="btn btn-default"/>
+										</form>
+									</div>
+								{{/if}}
 							{{/if}}
 						</div>
 						{{#if notDone}}
 						<div class="report-field report-field-player-one col-xs-6 hidden">
-							<form>
+							<form class="player-submit">
 								<div class="row">
 									<div class="form-group col-xs-6">
 										<label >{{Name PlayerOne}}</label>
@@ -40,11 +61,11 @@
 									<input type="text" name="opponent" class="hidden" value={{PlayerTwo}}>
 									<div class="row">
 										<div class="form-group col-xs-6">
-											<label>Impresion</label>
+											<label data-title="{{impressionTitle}}">Impresion</label>
 											<input class="number-input" type="number" name="impresion" min="0" max="15" required/>
 										</div>
 										<div class="form-group col-xs-6">
-											<label>Expresion</label>
+											<label data-title="{{expressionTitle}}" >Expresion</label>
 											<input class="number-input" type="number" name="expresion" min="0" max="15" required/>
 										</div>
 									</div>
@@ -55,7 +76,7 @@
 						</div>
 
 						<div class="report-field report-field-player-two col-xs-6 hidden">
-							<form>
+							<form class="player-submit">
 								<div class="row">
 									<div class="form-group col-xs-6">
 										<label>{{Name PlayerTwo}}</label>
@@ -71,11 +92,11 @@
 									<input type="text" name="opponent" class="hidden" value={{PlayerOne}}>
 									<div class="row">
 										<div class="form-group col-xs-6">
-											<label>Impresion</label>
+											<label data-title="{{impressionTitle}}" >Impresion</label>
 											<input class="number-input" type="number" name="impresion" min="0" max="15" required/>
 										</div>
 										<div class="form-group col-xs-6">
-											<label>Expresion</label>
+											<label data-title="{{expressionTitle}}" >Expresion</label>
 											<input class="number-input" type="number" name="expresion" min="0" max="15" required/>
 										</div>
 									</div>
@@ -88,6 +109,7 @@
 				</li>
 			{{/each}}
 		</ol>
+		
 	{{else}}
 		<h4>Paring is not ready</h4>
 	{{/if}}

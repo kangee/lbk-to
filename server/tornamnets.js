@@ -120,6 +120,30 @@ Meteor.methods({
 			}
 		}
 	},
+	updateResult: function(tournamentName, round , table , playerOne , playerOneScore , playerTwo , playerTwoScore){
+		if(Meteor.user()){
+			var tournament = Tournaments.findOne({Name:tournamentName});
+			if(Meteor.validationHelpers.isTo(tournament) && Meteor.validationHelpers.checkTable(tournament, round , table , playerOne, playerTwo)){
+				var _rounds = tournament.Rounds;
+				var _game = _rounds[round-1].Games[table-1];
+				var _oldScore = _game.Result.split("-");
+				var playerOneOld = Number(_oldScore[0]);
+				var playerTwoOld = Number(_oldScore[1]);
+				_game.Result = playerOneScore + "-" + playerTwoScore;
+				var _players = tournament.Players;
+				for (var i = _players.length - 1; i >= 0; i--) {
+					if (_players[i].Id === playerOne){
+						_players[i].Points = Number(_players[i].Points) + Number(playerOneScore) - playerOneOld;
+					}
+					if (_players[i].Id === playerTwo){
+						_players[i].Points = Number(_players[i].Points) + Number(playerTwoScore) - playerTwoOld;
+					}
+				}
+				var a = mergeSort(_players,playerSort(tournament.Name));
+				Tournaments.update({Name:tournament.Name},{$set: {Rounds: _rounds, Players: a}});
+			}
+		}
+	},
 	reportResult:function(tournamentName, round , table , playerOne , playerOneScore , playerTwo , playerTwoScore, opponent, impresion, expresion){
 		if(Meteor.user()){
 			var tournament = Tournaments.findOne({Name:tournamentName});
@@ -198,6 +222,35 @@ Meteor.methods({
 				Tournaments.update({Name:tournament.Name},{$set: {Players: a}});
 			}
 		}
+	},
+	reDoParing:function(tournamentName, round){
+		if(Meteor.user()){
+			var tournament = Tournaments.findOne({Name:tournamentName});
+			if(Meteor.validationHelpers.isTo(tournament)){
+				for (var i = tournament.Players.length - 1; i >= 0; i--) {
+					tournament.Players[i].Oponents.pop();
+					tournament.Players[i].Tables.pop();
+				}
+				Tournaments.update({Name:tournament.Name},{$set: {Players: tournament.Players}});
+				if(!tournament.Rounds[round-1].done){
+					Meteor.call("pairRound",tournamentName,round);
+					return
+				}
+			}
+		}
+	},
+	updatePoints:function(tournamentName, PlayerId, field, change){
+		if(Meteor.user()){
+			var tournament = Tournaments.findOne({Name:tournamentName});
+			if(Meteor.validationHelpers.isTo(tournament)){
+				for (var i = tournament.Players.length - 1; i >= 0; i--) {
+					if(tournament.Players[i].Id === PlayerId){
+						tournament.Players[i][field] += change;
+					}
+				}
+				Tournaments.update({Name:tournament.Name},{$set: {Players: tournament.Players}});
+			}
+		}
 	}
 })
 
@@ -210,12 +263,10 @@ var calcCost= function(player1 , player2){
 			haveMet += true;
 		}
 	};
-
 	if(player1.Id === player2.Id) return 10000;
 	if(haveMet) cost += 1000;
 	cost += Math.abs(player1.Points - player2.Points);
 	return cost;
-
 }
 
 
@@ -358,7 +409,6 @@ var hasMeet = function(playerOne,playerTwo){
 			return true;
 		}
 	};
-
 	return false;
 }
 
@@ -491,7 +541,6 @@ var matchPlayers= function(Players, ClubParing){
 
 	var lastGameIndex = -1;
 	while(remaningPlayers.length>=2){
-
 		var playerOne = remaningPlayers[0];
 		var playerTwo = null;
 		var foundOpponent = false
