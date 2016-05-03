@@ -98,15 +98,18 @@ Template.Tournament_round.events({
 	},
 	"click .player-one-report":function(event){
 		event.preventDefault();
+		swapReportText($(event.toElement)[0]);
 		$(event.toElement).parent().parent().children(".report-field-player-one").toggleClass("hidden");
 	},
 
 	"click .update-result":function(event){
 		event.preventDefault();
+		swapUpdateResultText($(event.toElement)[0]);
 		$(event.toElement).parent().children(".admin-update-result").toggleClass("hidden");
 	},
 	"click .player-two-report":function(event){
 		event.preventDefault();
+		swapReportText($(event.toElement)[0]);
 		$(event.toElement).parent().parent().children(".report-field-player-two").toggleClass("hidden");
 	},
 	"click .redo-paring":function(event){
@@ -117,3 +120,20 @@ Template.Tournament_round.events({
 		}
 	}
 });
+
+var swapReportText = function(element) {
+	if(element.innerHTML === "Report"){
+		element.innerHTML = "Close";
+	}else{
+		element.innerHTML = "Report"
+	}
+}
+
+var swapUpdateResultText = function(element) {
+	if(element.innerHTML === "Update Result"){
+		element.innerHTML = "Close";
+	}else{
+		element.innerHTML = "Update Result"
+	}
+}
+
