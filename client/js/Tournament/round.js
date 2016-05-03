@@ -57,7 +57,7 @@ Template.Tournament_round.helpers({
 			}
 			var noneReady = true;
 			for (var i = tournament.Rounds[round-1].Games.length - 1; i >= 0; i--) {
-				noneReady = noneReady && tournament.Rounds[round-1].Games[i].Result === null;
+				noneReady = noneReady && (tournament.Rounds[round-1].Games[i] === null || tournament.Rounds[round-1].Games[i].Result === null);
 			};
 			return noneReady
 		}
