@@ -163,12 +163,13 @@ Meteor.methods({
 					var gameDone = false;
 					var reportSoftScore = playerTwo === opponent && !_games[table -1].PlayerOneSubmited || playerOne === opponent && !_games[table -1].PlayerTwoSubmited;
 
-					if(_games[table-1].TempResult != null && _games[table-1].TempResult === playerOneScore + "-" + playerTwoScore){
+					if(_games[table-1].TempResult != null && _games[table-1].TempResult === playerOneScore + "-" + playerTwoScore && _games[table-1].PlayerToReportNext === currentPlayerId){
 						_games[table-1].Result = playerOneScore + "-" + playerTwoScore;
 						gameDone = true;
 					} 
 
 					_games[table-1].TempResult = playerOneScore + "-" + playerTwoScore;
+					_games[table-1].PlayerToReportNext = opponent;
 					
 					if(gameDone || reportSoftScore){
 						for (var i = _players.length - 1; i >= 0; i--) {
