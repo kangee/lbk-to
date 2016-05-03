@@ -26,7 +26,11 @@
 			{{#each ImpresionList}}
 				<li>{{Name}} - {{Impresion}}
 					{{#if isTo}}
-						<button class="btn btn-dafault change-impresion-points">Modify</button>
+						<button class="btn btn-dafault view-form">Modify</button>
+						<form class="hidden impresion-form" style="display:inline-block;">
+							<input type="number" name="number"/>
+							<input type="submit" class="btn btn-default" />
+						</form>
 					{{/if}}
 				</li>
 			{{/each}}
@@ -36,7 +40,11 @@
 			{{#each ExpresionList}}
 				<li>{{Name}} - {{Expresion}}
 					{{#if isTo}}
-						<button class="btn btn-dafault change-expression-points">Modify</button>
+						<button class="btn btn-dafault view-form">Modify</button>
+						<form class="hidden expression-form" style="display:inline-block;">
+							<input type="number" name="number"/>
+							<input type="submit" class="btn btn-default" />
+						</form>
 					{{/if}}
 				</li>
 			{{/each}}

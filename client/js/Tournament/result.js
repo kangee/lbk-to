@@ -36,8 +36,25 @@ Template.Tournament_Result.events({
 		event.preventDefault();
 		var tournamentName = Router.current().data().Tournament.Name;
 		var change = Number(event.target["number"].value);
+		event.target["number"].value = null;
 		
 		Meteor.call('updatePoints', tournamentName, this.Id, "Points", change);
+	},
+	"submit .impresion-form":function(event){
+		event.preventDefault();
+		var tournamentName = Router.current().data().Tournament.Name;
+		var change = Number(event.target["number"].value);
+		event.target["number"].value = null;
+		
+		Meteor.call('updatePoints', tournamentName, this.Id, "Impresion", change);
+	},
+	"submit .expression-form":function(event){
+		event.preventDefault();
+		var tournamentName = Router.current().data().Tournament.Name;
+		var change = Number(event.target["number"].value);		
+		event.target["number"].value = null;
+
+		Meteor.call('updatePoints', tournamentName, this.Id, "Expresion", change);
 	}
 })
 
