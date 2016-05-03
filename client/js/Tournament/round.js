@@ -69,7 +69,6 @@ Template.Tournament_round.helpers({
 	expressionTitle:function(){
 		return "0-10 Sportsmanship\n\t0 = I will never want to play this person again.\n\t5 = “normal” nice opponent.\n\t10 = the best sportsman I can think of\n0-5 Army cheesyness\n\t0 = min-maxing, on the limits of the Comp.\n\t3 = Hard but balanced army,\n\t5 = fluffy and cosy army with 3+ non-optimal units";
 	}
-
 });
 
 Template.Tournament_round.events({

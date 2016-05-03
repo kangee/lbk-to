@@ -1,0 +1,14 @@
+<template name="Tournament_round_mission" >
+	{{#if isTo}}
+		<button class="btn btn-dafaut update-mission">Modify Misson</button>
+	{{/if}}
+	{{#if hasMission}}
+		<h2>Mission</h2>
+		<hr />
+		<p>Deployment:{{deployment}}</p>
+		{{#each missions}}
+		<p>{{text}}</p>
+		{{/each}}
+	{{/if}}
+
+</template>

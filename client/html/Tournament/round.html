@@ -1,6 +1,4 @@
 <template name="Tournament_round" >
-
-
 <div class="col-sm-offset-1">
 	{{#if Paired}}
 		{{#if canReDoParing}}
@@ -109,7 +107,7 @@
 				</li>
 			{{/each}}
 		</ol>
-		
+		{{>Tournament_round_mission}}
 	{{else}}
 		<h4>Paring is not ready</h4>
 	{{/if}}
