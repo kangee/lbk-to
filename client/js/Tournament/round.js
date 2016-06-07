@@ -118,6 +118,13 @@ Template.Tournament_round.events({
 			var tournamentName = Router.current().data().Tournament.Name;
 			Meteor.call("reDoParing" , tournamentName, this.Round)
 		}
+	},
+	"click #pair":function(event){
+		event.preventDefault();
+		if(confirm("u sure?")){
+			var tournamentName = Router.current().data().Tournament.Name;
+			Meteor.call("pairRound" , tournamentName, this.Round)
+		}
 	}
 });
 

@@ -110,6 +110,9 @@
 		{{>Tournament_round_mission}}
 	{{else}}
 		<h4>Paring is not ready</h4>
+		{{#if isTo}}
+			<button class="btn btn-lg" id="pair">Pair round</button>
+		{{/if}}
 	{{/if}}
 </div>
 </template>
