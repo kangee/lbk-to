@@ -1,5 +1,4 @@
 
-Meteor.subscribe("tournaments");
 
 Template.tournamentsList.helpers({
 	tournaments: function(){

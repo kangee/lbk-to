@@ -1,6 +1,4 @@
 Router.map(function() {
-
-
   	this.route('tournamentsList', {
 	    path: '/',
 	    template: 'tournamentsList',
@@ -13,6 +11,19 @@ Router.map(function() {
 	    layoutTemplate: 'main',
 	    onBeforeAction: function (pause) {
 	       	if (!Meteor.user()) {
+	          Router.go("/");
+	        }else{
+	     	   this.next();
+	    	}
+	    }
+	});
+
+	this.route('admin', {
+	    path: '/admin',
+	    template: 'admin',
+	    layoutTemplate: 'main',
+	    onBeforeAction: function (pause) {
+	       	if (!Meteor.user().isAdmin) {
 	          Router.go("/");
 	        }else{
 	     	   this.next();
@@ -76,7 +87,5 @@ Router.map(function() {
 	    	}
 	    }
 	})
-
-
 });
 
