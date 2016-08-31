@@ -68,50 +68,13 @@ Template.Tournament_round.helpers({
 	},
 	expressionTitle:function(){
 		return "0-10 Sportsmanship\n\t0 = I will never want to play this person again.\n\t5 = “normal” nice opponent.\n\t10 = the best sportsman I can think of\n0-5 Army cheesyness\n\t0 = min-maxing, on the limits of the Comp.\n\t3 = Hard but balanced army,\n\t5 = fluffy and cosy army with 3+ non-optimal units";
-	}
+	},
+	battlePoints:function(){
+		return Router.current().data().Tournament.Scoring_type == "battlePoints_Scoring";
+	},
 });
 
 Template.Tournament_round.events({
-	"submit .player-submit":function(event){
-		event.preventDefault();
-		var tournamentName = Router.current().data().Tournament.Name;
-		var playerOneScore = event.target["player-one"].value;
-		var playerTwoScore = event.target["player-two"].value;
-		var opponent = event.target["opponent"].value;
-		var impresion = event.target["impresion"].value;
-		var expresion = event.target["expresion"].value;
-
-		if (Number(playerOneScore) + Number(playerTwoScore) != 20){
-			alert("sum should be 20");
-			return
-		}
-
-		Meteor.call("reportResult" , tournamentName, Router.current().data().Round, this.Table , this.PlayerOne , playerOneScore , this.PlayerTwo , playerTwoScore, opponent, impresion, expresion);
-	},
-	"submit .admin-submit":function(event){
-		event.preventDefault();
-		var tournamentName = Router.current().data().Tournament.Name;
-		var playerOneScore = event.target["player-one"].value;
-		var playerTwoScore = event.target["player-two"].value;
-
-		Meteor.call("updateResult" , tournamentName, Router.current().data().Round, this.Table , this.PlayerOne , playerOneScore , this.PlayerTwo , playerTwoScore);
-	},
-	"click .player-one-report":function(event){
-		event.preventDefault();
-		swapReportText($(event.toElement)[0]);
-		$(event.toElement).parent().parent().children(".report-field-player-one").toggleClass("hidden");
-	},
-
-	"click .update-result":function(event){
-		event.preventDefault();
-		swapUpdateResultText($(event.toElement)[0]);
-		$(event.toElement).parent().children(".admin-update-result").toggleClass("hidden");
-	},
-	"click .player-two-report":function(event){
-		event.preventDefault();
-		swapReportText($(event.toElement)[0]);
-		$(event.toElement).parent().parent().children(".report-field-player-two").toggleClass("hidden");
-	},
 	"click .redo-paring":function(event){
 		event.preventDefault();
 		if(confirm("u sure?")){
