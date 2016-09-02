@@ -1,12 +1,15 @@
 <template name="Tournament_Result">
 	<h2>Tournamnet Results</h2>
 	{{#if viewResult}}
-		<h3>Total Points</h3>
-		<ol>
-			{{#each Total}}
-				<li>{{Name}} - {{Points}}</li>
-			{{/each}}
-		</ol>
+		{{#if showTotal}}
+			<h3>Total Points</h3>
+			<ol>
+				{{#each Total}}
+					<li>{{Name}} - {{Points}}</li>
+				{{/each}}
+			</ol>
+		{{/if}}
+
 		<h3>Battle Points</h3>
 		<ol>
 			{{#each BattlePoints}}
@@ -21,34 +24,39 @@
 				</li>
 			{{/each}}
 		</ol>
-		<h3>Impresion Points</h3>
-		<ol>
-			{{#each ImpresionList}}
-				<li>{{Name}} - {{Impresion}}
-					{{#if isTo}}
-						<button class="btn btn-dafault view-form">Modify</button>
-						<form class="hidden impresion-form" style="display:inline-block;">
-							<input type="number" name="number"/>
-							<input type="submit" class="btn btn-default" />
-						</form>
-					{{/if}}
-				</li>
-			{{/each}}
+
+		{{#if showImpression}}
+			<h3>Impresion Points</h3>
+			<ol>
+				{{#each ImpresionList}}
+					<li>{{Name}} - {{Impresion}}
+						{{#if isTo}}
+							<button class="btn btn-dafault view-form">Modify</button>
+							<form class="hidden impresion-form" style="display:inline-block;">
+								<input type="number" name="number"/>
+								<input type="submit" class="btn btn-default" />
+							</form>
+						{{/if}}
+					</li>
+				{{/each}}
+			</ol>
+		{{/if}}
+		{{#if showExpression}}
+			<h3>Expresion Points</h3>
+			<ol>
+				{{#each ExpresionList}}
+					<li>{{Name}} - {{Expresion}}
+						{{#if isTo}}
+							<button class="btn btn-dafault view-form">Modify</button>
+							<form class="hidden expression-form" style="display:inline-block;">
+								<input type="number" name="number"/>
+								<input type="submit" class="btn btn-default" />
+							</form>
+						{{/if}}
+					</li>
+				{{/each}}
 		</ol>
-		<h3>Expresion Points</h3>
-		<ol>
-			{{#each ExpresionList}}
-				<li>{{Name}} - {{Expresion}}
-					{{#if isTo}}
-						<button class="btn btn-dafault view-form">Modify</button>
-						<form class="hidden expression-form" style="display:inline-block;">
-							<input type="number" name="number"/>
-							<input type="submit" class="btn btn-default" />
-						</form>
-					{{/if}}
-				</li>
-			{{/each}}
-		</ol>
+		{{/if}}
 	{{else}}
 		<h3>Arent ready yeat</h3>
 	{{/if}}
