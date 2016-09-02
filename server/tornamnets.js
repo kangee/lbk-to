@@ -49,6 +49,17 @@ Meteor.methods({
 			}
 		}		
 	},
+	shuffle : function(tournamentName){
+		if(Meteor.user()){
+			var tournament = Tournaments.findOne({Name:tournamentName});
+			if(Meteor.validationHelpers.isTo(tournament)){
+
+				var a = Meteor.Sorter.shuffle(tournament.Players);
+				Tournaments.update({Name:tournamentName},{$set:{Players: a}});
+			}
+		}
+	},
+
 	sortOnRanking:function(tournamentName){
 		if(Meteor.user()){
 			var url = "http://www.svenska40k.se/rank.php";
