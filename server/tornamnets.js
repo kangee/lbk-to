@@ -19,10 +19,15 @@ Meteor.methods({
 				var id = new Mongo.ObjectID();
 				_player.Id = id._str;
 				_player.Points = 0;
-				_player.Impresion = 0;
-				_player.Expresion = 0;
 				_player.Oponents = [];
 				_player.Tables = [];
+				if(tournament.Scoring_type === "ITC_Scoring"){
+				}else{
+					_player.Impresion = 0;
+					_player.Expresion = 0;
+				}
+
+
 				Tournaments.update({ Name: tournamentName },{ $push: { Players: _player }})
 			}
 		}
@@ -102,11 +107,15 @@ Meteor.methods({
 	pairRound:function(tournamentName,round){
 		if(Meteor.user()){
 			var tournament = Tournaments.findOne({Name:tournamentName});
-			if(Meteor.validationHelpers.isTo(tournament)){
+			if(Meteor.validationHelpers.isTo(tournament) || tournament.Rounds[round-2].done){
 				var _rounds = tournament.Rounds;
 				var _players = tournament.Players;
 
-				var a = mergeSort(_players,playerSort(tournament.Name));
+				if(tournament.Scoring_type === "ITC_Scoring"){
+					var a = Meteor.Sorter.mergeSort(_players,Meteor.ITC.playerSort(tournament));
+				}else{
+					var a = Meteor.Sorter.mergeSort(_players,Meteor.BattlePoints.playerSort(tournament));
+				}
 
 				if(round <= _rounds.length){
 					var games = matchPlayers(_players, tournament.ClubParing);
@@ -124,92 +133,26 @@ Meteor.methods({
 		if(Meteor.user()){
 			var tournament = Tournaments.findOne({Name:tournamentName});
 			if(Meteor.validationHelpers.isTo(tournament) && Meteor.validationHelpers.checkTable(tournament, round , table , playerOne, playerTwo)){
-				var _rounds = tournament.Rounds;
-				var _game = _rounds[round-1].Games[table-1];
-				var _oldScore = _game.Result.split("-");
-				var playerOneOld = Number(_oldScore[0]);
-				var playerTwoOld = Number(_oldScore[1]);
-				_game.Result = playerOneScore + "-" + playerTwoScore;
-				var _players = tournament.Players;
-				for (var i = _players.length - 1; i >= 0; i--) {
-					if (_players[i].Id === playerOne){
-						_players[i].Points = Number(_players[i].Points) + Number(playerOneScore) - playerOneOld;
-					}
-					if (_players[i].Id === playerTwo){
-						_players[i].Points = Number(_players[i].Points) + Number(playerTwoScore) - playerTwoOld;
-					}
+
+				if(tournament.Scoring_type === "ITC_Scoring"){
+					Meteor.ITC.updateResult(tournament,round , table , playerOne , playerOneScore , playerTwo , playerTwoScore);
+				}else{
+					Meteor.BattlePoints.updateResult(tournament,round , table , playerOne , playerOneScore , playerTwo , playerTwoScore);
 				}
-				var a = mergeSort(_players,playerSort(tournament.Name));
-				Tournaments.update({Name:tournament.Name},{$set: {Rounds: _rounds, Players: a}});
 			}
 		}
 	},
 	reportResult:function(tournamentName, round , table , playerOne , playerOneScore , playerTwo , playerTwoScore, opponent, impresion, expresion){
+		console.log(tournamentName, round , table , playerOne , playerOneScore , playerTwo , playerTwoScore, opponent, impresion, expresion);
 		if(Meteor.user()){
+			console.log("user");
 			var tournament = Tournaments.findOne({Name:tournamentName});
 			if(Meteor.validationHelpers.checkTable(tournament, round , table , playerOne, playerTwo)){
-				var currentPlayerId = null;
-
-				if (opponent === playerOne){
-					currentPlayerId = playerTwo;
-				}else if(opponent === playerTwo){
-					currentPlayerId = playerOne;
-				}
-
-				if(Meteor.validationHelpers.isTo(tournament) || Meteor.validationHelpers.isPlayer(tournament, currentPlayerId)){
-					var _rounds = tournament.Rounds;
-					var _games = _rounds[round-1].Games;
-					var _players = tournament.Players;
-					var gameDone = false;
-					var reportSoftScore = playerTwo === opponent && !_games[table -1].PlayerOneSubmited || playerOne === opponent && !_games[table -1].PlayerTwoSubmited;
-
-					if(_games[table-1].TempResult != null && _games[table-1].TempResult === playerOneScore + "-" + playerTwoScore && _games[table-1].PlayerToReportNext === currentPlayerId){
-						_games[table-1].Result = playerOneScore + "-" + playerTwoScore;
-						gameDone = true;
-					} 
-
-					_games[table-1].TempResult = playerOneScore + "-" + playerTwoScore;
-					_games[table-1].PlayerToReportNext = opponent;
-					
-					if(gameDone || reportSoftScore){
-						for (var i = _players.length - 1; i >= 0; i--) {
-							if(gameDone){
-								if (_players[i].Id === playerOne){
-									_players[i].Points = Number(_players[i].Points) + Number(playerOneScore);
-								}
-								if (_players[i].Id === playerTwo){
-									_players[i].Points = Number(_players[i].Points) + Number(playerTwoScore);
-								}
-							}
-							if(reportSoftScore){
-								if (_players[i].Id === opponent){
-										_players[i].Impresion = Number(_players[i].Impresion) + Number(impresion);
-										_players[i].Expresion = Number(_players[i].Expresion) + Number(expresion);
-
-									if(opponent === playerOne){
-										_games[table-1].PlayerTwoSubmited = true;
-									}
-									if(opponent === playerTwo){
-										_games[table-1].PlayerOneSubmited = true;
-									}
-								}
-							}
-						}
-					}
-					
-					var a = mergeSort(_players,playerSort(tournament.Name));
-
-					Tournaments.update({Name:tournament.Name},{$set: {Rounds: _rounds, Players: a}});
-					for (var i = _games.length - 1; i >= 0; i--) {
-						if (_games[i].Result === null){
-							return
-						}
-					};
-					_rounds[round-1].done = true;
-
-					Tournaments.update({Name:tournament.Name},{$set: {Rounds: _rounds, Players: a}});
-					var next = Number(round) + 1;
-					Meteor.call("pairRound",tournamentName,next);
+				console.log("valid");
+				if(tournament.Scoring_type === "ITC_Scoring"){
+					Meteor.ITC.reportResult(tournament, round , table , playerOne , playerOneScore , playerTwo , playerTwoScore)
+				}else{
+					Meteor.BattlePoints.reportResult(tournament, round , table , playerOne , playerOneScore , playerTwo , playerTwoScore, opponent, impresion, expresion)
 				}
 			}
 		}
@@ -219,7 +162,11 @@ Meteor.methods({
 			var tournament = Tournaments.findOne({Name:tournamentName});
 			if(Meteor.validationHelpers.isTo(tournament)){
 				var _players = tournament.Players;
-				var a = mergeSort(_players,playerSort(tournament.Name));
+				if(tournament.Scoring_type === "ITC_Scoring"){
+					var a = Meteor.Sorter.mergeSort(_players,Meteor.ITC.playerSort(tournament));
+				}else{
+					var a = Meteor.Sorter.mergeSort(_players,Meteor.BattlePoints.playerSort(tournament));
+				}
 				Tournaments.update({Name:tournament.Name},{$set: {Players: a}});
 			}
 		}
@@ -272,7 +219,7 @@ var calcCost= function(player1 , player2){
 
 
 
-var playerSort = function(tournamentName){
+var playerSortOld = function(tournamentName){
 	return function(player1, player2){
 		//batle points tested
 		if ((player2.Points - player1.Points)!==0) {
@@ -281,7 +228,7 @@ var playerSort = function(tournamentName){
 		}
 
 		var tournament = Tournaments.findOne({Name:tournamentName})
-		var index = IndexOf(player1.Oponents,player2.Id);
+		var index = Meteor.Sorter.IndexOf(player1.Oponents,player2.Id);
 		//internal meeting
 		if (index != -1){			
 					var result = tournament.Rounds[index].Games[Number(player1.Tables[index]-1)].Result
@@ -383,27 +330,6 @@ var playerSort = function(tournamentName){
 	}
 }
 
-var PlayedInGame = function(game,playerId){
-	if (game.PlayerOne === playerId || game.PlayerTwo === playerId){
-		return true;
-	}
-	return false;
-}
-
-var pointsFromGame = function(game,playerId){
-	if(game.Result === null){
-		return 0;
-	}
-	var result = game.Result.split("-");
-	if (game.PlayerOne === playerId){
-		return Number(result[0]);
-	}
-	if (game.PlayerTwo === playerId){
-		return Number(result[1]);
-	}
-	return 0;
-}
-
 var hasMeet = function(playerOne,playerTwo){
 	for (var i = 0; i < playerOne.Oponents.length; i++) {
 		if (playerOne.Oponents[i] === playerTwo.Id){
@@ -452,15 +378,6 @@ var clearGame= function(Players, remaningPlayers, PlayerOneId, PlayerTwoId){
 
 	return [playerOne,playerTwo];
 
-}
-
-var IndexOf = function(array, element){
-	for (var i = array.length - 1; i >= 0; i--) {
-		if(array[i]===element){
-			return i
-		}
-	};
-	return -1
 }
 
 var contains = function(array, element){
@@ -547,7 +464,7 @@ var matchPlayers= function(Players, ClubParing){
 		var foundOpponent = false
 		var k = 1;
 		while (!foundOpponent) {
-			if(!hasMeet(playerOne.Player,remaningPlayers[k].Player) && IndexOf(badMachup[playerOne.Player.Id],remaningPlayers[k].Player.Id)==-1){
+			if(!hasMeet(playerOne.Player,remaningPlayers[k].Player) && Meteor.Sorter.IndexOf(badMachup[playerOne.Player.Id],remaningPlayers[k].Player.Id)==-1){
 				
 				playerTwo = remaningPlayers[k]
 
@@ -575,46 +492,6 @@ var matchPlayers= function(Players, ClubParing){
 }
 
 
- var mergeSort = function(array, compare) {
 
-    var length = array.length,
-        middle = Math.floor(length / 2);
-
-    if (length < 2)
-      return array;
-
-    return merge(
-      mergeSort(array.slice(0, middle),compare),
-      mergeSort(array.slice(middle, length),compare),
-      compare
-    );
-  }
-
-  var merge = function(left, right, compare) {
-
-    var result = [];
-
-    while (left.length > 0 || right.length > 0) {
-      if (left.length > 0 && right.length > 0) {
-        if (compare(left[0], right[0]) <= 0) {
-          result.push(left[0]);
-          left = left.slice(1);
-        }
-        else {
-          result.push(right[0]);
-          right = right.slice(1);
-        }
-      }
-      else if (left.length > 0) {
-        result.push(left[0]);
-        left = left.slice(1);
-      }
-      else if (right.length > 0) {
-        result.push(right[0]);
-        right = right.slice(1);
-      }
-    }
-    return result;
-  }
 
 

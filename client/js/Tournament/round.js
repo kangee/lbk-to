@@ -16,37 +16,8 @@ Template.Tournament_round.helpers({
 		var roundIndex = Router.current().data().Round-1;
 		return tournamnet.Rounds[roundIndex].paried;
 	},
-	Name: function(id){
-		var players = Router.current().data().Tournament.Players;
-		
-		for (var i = players.length - 1; i >= 0; i--) {
-			if(players[i].Id === id){
-				return players[i].Name
-			}
-		};
-	},
 	isTo: function(){
 		return Meteor.user().username === Router.current().data().Tournament.TO
-	},
-	canReport: function(id){
-		var playerUserName = "";
-		var players = Router.current().data().Tournament.Players;
-		for (var i = players.length - 1; i >= 0; i--) {
-			if(players[i].Id === id){
-				playerUserName = players[i].User;
-			}
-		};
-		return Meteor.user().username === Router.current().data().Tournament.TO || Meteor.user().username === playerUserName;
-	},
-
-	notDone:function(){
-		return this.Result === null;
-	},
-	TempResult:function(player){
-		if(this.TempResult !== null){
-			var results = this.TempResult.split("-");
-			return Number(results[player-1]);
-		}
 	},
 	canReDoParing:function(){
 		if (Meteor.user().username === Router.current().data().Tournament.TO){
@@ -62,12 +33,6 @@ Template.Tournament_round.helpers({
 			return noneReady
 		}
 		return false;
-	},
-	impressionTitle:function(){
-		return "0-8 Modelling\n\t0-2= fluffy or narratively arranged.\n\t0-1= Coherent colours & markings.\n\t0-2= Symbols, banners etc.\n\t0-3 impression from modelling/posing and conversions\n0-7 Painting\n\t-5= unpainted model/s.\n\t1= Painted army.\n\t+1= Well painted army\n\t0-1= all models based ore not,\n\t0-2 = technical challenges.\n\t0-2 = details";
-	},
-	expressionTitle:function(){
-		return "0-10 Sportsmanship\n\t0 = I will never want to play this person again.\n\t5 = “normal” nice opponent.\n\t10 = the best sportsman I can think of\n0-5 Army cheesyness\n\t0 = min-maxing, on the limits of the Comp.\n\t3 = Hard but balanced army,\n\t5 = fluffy and cosy army with 3+ non-optimal units";
 	},
 	battlePoints:function(){
 		return Router.current().data().Tournament.Scoring_type == "battlePoints_Scoring";

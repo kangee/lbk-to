@@ -1,13 +1,22 @@
 Template.Tournament_Result.helpers({
+	showTotal : function(){
+		return Router.current().data().Tournament.Scoring_type === "battlePoints_Scoring"
+	},
 	Total:function(){
 		return Router.current().data().Tournament.Players.map(function(x){ return { Name: x.Name, Points: x.Points + x.Impresion + x.Expresion};}).sort(PointSort);
 	},
 	BattlePoints: function(){
 		return Router.current().data().Tournament.Players;
 	},
+	showImpression : function(){
+		return Router.current().data().Tournament.Scoring_type === "battlePoints_Scoring"
+	},
 	ImpresionList:function(){
 		return Router.current().data().Tournament.Players.sort(ImpresionSort);
 
+	},
+	showExpression : function(){
+		return Router.current().data().Tournament.Scoring_type === "battlePoints_Scoring"
 	},
 	ExpresionList:function(){
 		return Router.current().data().Tournament.Players.sort(ExpresionSort);

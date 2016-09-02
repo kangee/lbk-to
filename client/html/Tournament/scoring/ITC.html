@@ -1,4 +1,50 @@
-
 <template name="ITC_Scoring">
-	<span>ITC scoring</span>
+	<div class="col-xs-12">
+		<p>{{Name game.PlayerOne}} -VS- {{Name game.PlayerTwo}}</p>
+		{{#if notDone}}
+			{{#if canReport}}
+				{{#if notDone}}
+					<button class="btn btn-default player-report">Report</button>
+					<div class="player-report-container col-xs-12 hidden">
+						<form class="player-submit">
+							<div class="row">
+								<div class="form-group col-xs-6">
+									<label >{{Name game.PlayerOne}}</label>
+									<input class="number-input" type="number" name="player-one" min="0" max="20" required/>
+								</div>
+								<div class="form-group col-xs-6">
+									<label>{{Name game.PlayerTwo}}</label>
+									<input class="number-input" type="number" name="player-two" min="0" max="20" required/>
+								</div>
+							</div>
+							<input type="submit" class="btn btn-default"/>
+						</form>
+					</div>
+				{{/if}}
+			{{/if}}
+		{{else}}
+			{{game.Result}}
+			{{#if isTo}}
+				<button class="btn btn-default update-result">Update Result</button>
+				<div class=" admin-update-result col-xs-12 hidden">
+					<form class="admin-submit">
+						<div class="row">
+							<div class="form-group col-xs-6">
+								<label >{{Name game.PlayerOne}}</label>
+								<input class="number-input" type="number" name="player-one" min="0" max="20" required/>
+							</div>
+							<div class="form-group col-xs-6">
+								<label>{{Name game.PlayerTwo}}</label>
+								<input class="number-input" type="number" name="player-two" min="0" max="20" required/>
+							</div>
+						</div>
+						<input type="submit" class="btn btn-default"/>
+					</form>
+				</div>
+			{{/if}}
+		{{/if}}
+	</div>
+
+
+
 </template>
