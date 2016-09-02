@@ -58,6 +58,10 @@ Template.tournament.events({
 		var tournamentName = Router.current().data().Tournament.Name;
 		Meteor.call('sortOnRanking',tournamentName);
 	},
+	'click #shuffle':function(){
+		var tournamentName = Router.current().data().Tournament.Name;
+		Meteor.call('shuffle',tournamentName);
+	},
 	'click .signup':function(event){
 		event.preventDefault();
 		var userProfile = Meteor.user().profile;
